@@ -3,7 +3,8 @@ Project Log
 
 
 ###Project 2 Progress Log
-10/10 - Installed Debian onto SD Card. 
+10/10 - Installed Debian onto SD Card. Using v1.2
+http://sourceforge.net/projects/galileodebian/files/SD%20card%20Image/
 
 10/09 - Ses and Uy were able to manually get an LED light to blink on the board. Ses established the GitHub repository and have put a resource in the folder "openGPIO.c"
 
