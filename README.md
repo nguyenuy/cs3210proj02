@@ -2,7 +2,9 @@ Project Log
 =========
 
 
-###Project 2 Progress So Far
+###Project 2 Progress Log
+10/10 - Installed Debian onto SD Card. 
+
 10/09 - Ses and Uy were able to manually get an LED light to blink on the board. Ses established the GitHub repository and have put a resource in the folder "openGPIO.c"
 
 10/08 - Ses was able to get the serial connection working on the Galileo Board
@@ -20,5 +22,6 @@ Project Log
 2. User space morse code to read from switch
 3. Build Yocto Linux infrastructure (or load Debian) so that can load kernel module
 4. Kernel Module - Implement read side of morse character 5. device in kernel. GPIO signal from board to character
-6. Kernel Module - Implement write side. 
-7. Complete Project Write-Up
+6. Kernel Module - Implement write side.
+7. Implement User Space Chat Program  
+8. Complete Project Write-Up
