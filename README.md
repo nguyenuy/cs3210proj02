@@ -3,13 +3,15 @@ Project Log
 
 
 ###Project 2 Progress Log
-10/10 - Installed Debian onto SD Card. Using v1.2
+10/15 - Compiled userMorseWrite.c which only blinks LEDs now on pins GPIO 3,5,6,7 [Ses,Uy]
+
+10/14 - Installed Debian onto SD Card. (Ses has documentation on this) Using v1.2
  http://sourceforge.net/projects/galileodebian/files/SD%20card%20Image/<br>
  Added userWriteMorse.c and Makefile
 
 10/09 - Ses and Uy were able to manually get an LED light to blink on the board. Ses established the GitHub repository and have put a resource in the folder "openGPIO.c"
 
-10/08 - Ses was able to get the serial connection working on the Galileo Board
+10/08 - Get the serial connection working on the Galileo Board [Ses]
 
            
 ###Project 2 To-Do until Meeting Until 10/15
