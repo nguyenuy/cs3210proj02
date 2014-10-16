@@ -1,39 +1,3 @@
-/*
- Copyright (c) 2014 Intel Corporation  All Rights Reserved.
- The source code, information and material ("Material") contained herein is owned by Intel Corporation or its suppliers or licensors, and title to such Material remains with Intel Corporation 
- or its suppliers or licensors. The Material contains proprietary information of Intel or its suppliers and licensors. The Material is protected by worldwide copyright laws and treaty provisions. 
- No part of the Material may be used, copied, reproduced, modified, published, uploaded, posted, transmitted, distributed or disclosed in any way without Intel's prior express written permission. 
- No license under any patent, copyright or other intellectual property rights in the Material is granted to or conferred upon you, either expressly, by implication, inducement, estoppel or otherwise. 
- Any license under such intellectual property rights must be express and approved by Intel in writing.
-
-*
-* Author: Sulamita Garcia
-* Based on LEDblink.c by Nandkishor Sonar.
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-
-Include supplier trademarks or logos as supplier requires Intel to use, preceded by an asterisk. An asterisked footnote can be added as follows: *Third Party trademarks are the property of their respective owners.
-
-Unless otherwise agreed by Intel in writing, you may not remove or alter this notice or any other notice embedded in Materials by Intel or Intel’s suppliers or licensors in any way.”
-
-*/
-
 /* This code blinks LEDs connected to Galileo GPIO3 (Arduino PIN13), GPIO17,
  * GPIO24 and GPIO27 (pins 5 6 and 7)
  */
@@ -53,11 +17,32 @@ Unless otherwise agreed by Intel in writing, you may not remove or alter this no
 #define GPIO_DIRECTION_OUT     (0)
 #define ERROR                  (-1)
 
+
+/*
+* Morse code structure and timing
+* http://www.nu-ware.com/NuCode%20Help/index.html?morse_code_structure_and_timing_.htm
+* ==================================
+* Dash Length = Dot length x 3
+* Pause between elements = Dot Length
+* Pause between characters = Dot Length x 3
+* Pause between words = Dot Length x 7
+*/
+#define DIT_LENGTH             (1)
+#define DAH_LENGTH             (3)
+
+#define SLEEP_ELEMENT          (1)
+#define SLEEP_CHARACTER        (3)
+#define SLEEP_WORD             (7)
+
 #define CHAR_SIZE              (256)
-int charToBin[CHAR_SIZE];
+short charToBin[CHAR_SIZE];
+char translated[1000];
 
 //Putting Morse Code Function Declarations Here
 void initialize_character_array();
+int flash_led(int gpio, int seconds, int type);
+int string_to_flash_led(char *buf);
+int string_to_morse(char *buf, int length);
 
 
 int openGPIO(int gpio, int direction )
@@ -298,4 +283,64 @@ void initialize_character_array(){
     char lower = ch - diff;
     charToBin[ch] = charToBin[lower];
   }
+}
+
+int flash_led(int gpio, int seconds, int type) {
+
+	int filehandle_LEDGPIO;
+
+	filehandle_LEDGPIO = openGPIO(GP_LED, GPIO_DIRECTION_OUT);
+
+	if(filehandle_LEDGPIO == ERROR) {
+		return -1;
+	}
+
+	//LED ON
+	writeGPIO(filehandle_LEDGPIO, 1);
+	sleep(seconds);
+
+	//LED OFF
+	writeGPIO(filehandle_LEDGPIO, 0);
+	sleep(type);
+
+
+	closeGPIO(GP_LED, filehandle_LEDGPIO);	
+
+	return 0;
+}
+
+int string_to_morse(char *buf, int length) {
+
+	int i=0;
+	char *p = translated;
+	for(; i<length; i++){
+		char ch = *(buf+i);
+		int shift = 15;
+		int bin = charToBin[ch];
+		for( ; shift>=0; shift--){
+		  short mask = 1<<shift;
+		  if((mask & bin) != 0)
+			break;
+		}
+
+	shift--;
+
+	for(; shift>=0; shift--){
+	  short mask = 1<<shift;
+	  if((mask & bin) != 0){
+			*(p++) = 'd';
+			*(p++) = 'i';
+			*(p++) = 't';
+		  } else {
+			*(p++) = 'd';
+			*(p++) = 'a';
+			*(p++) = 'h';
+		}
+	  *(p++) = (shift==0?' ':'-');
+		}
+	}
+
+	*(p) = '\0';
+
+	return 0;
 }
