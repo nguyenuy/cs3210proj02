@@ -53,6 +53,12 @@ Unless otherwise agreed by Intel in writing, you may not remove or alter this no
 #define GPIO_DIRECTION_OUT     (0)
 #define ERROR                  (-1)
 
+#define CHAR_SIZE              (256)
+int charToBin[CHAR_SIZE];
+
+//Putting Morse Code Function Declarations Here
+void initialize_character_array();
+
 
 int openGPIO(int gpio, int direction )
 {
@@ -172,6 +178,7 @@ int main(void)
 		printf("Enter a string: ");
 		fgets(msgstring,1000,stdin);
 		printf("Your string is: %s", msgstring);
+		initialize_character_array();
 
 		//TODO: IMPLEMENT ENGLISH TO MORSE TRANSLATION (COPY FROM PROJ01)
 
@@ -224,4 +231,71 @@ int main(void)
         puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
 
         return 0;
+}
+
+//Morse Code Definitions Here
+void initialize_character_array(){
+  int i=0;
+  for(; i<CHAR_SIZE;i++){
+    charToBin[i] = 0;
+  }
+  charToBin['a'] = 0b110;
+  charToBin['b'] = 0b10111;
+  charToBin['c'] = 0b10101;
+  charToBin['d'] = 0b1011;
+  charToBin['e'] = 0b11;
+  charToBin['f'] = 0b11101;
+  charToBin['g'] = 0b1001;
+  charToBin['h'] = 0b11111;
+  charToBin['i'] = 0b111;
+  charToBin['j'] = 0b11000;
+  charToBin['k'] = 0b1010;
+  charToBin['l'] = 0b11011;
+  charToBin['m'] = 0b100;
+  charToBin['n'] = 0b101;
+  charToBin['o'] = 0b1000;
+  charToBin['p'] = 0b11001;
+  charToBin['q'] = 0b10010;
+  charToBin['r'] = 0b1101;
+  charToBin['s'] = 0b1111;
+  charToBin['t'] = 0b10;
+  charToBin['u'] = 0b1110;
+  charToBin['v'] = 0b11110;
+  charToBin['w'] = 0b1100;
+  charToBin['x'] = 0b10110;
+  charToBin['y'] = 0b10100;
+  charToBin['z'] = 0b10011;
+  charToBin['1'] = 0b110000;
+  charToBin['2'] = 0b111000;
+  charToBin['3'] = 0b111100;
+  charToBin['4'] = 0b111110;
+  charToBin['5'] = 0b111111;
+  charToBin['6'] = 0b101111;
+  charToBin['7'] = 0b100111;
+  charToBin['8'] = 0b100011;
+  charToBin['9'] = 0b100001;
+  charToBin['0'] = 0b100000;
+  charToBin['.'] = 0b1101010;
+  charToBin['?'] = 0b1110011;
+  charToBin['!'] = 0b1010100;
+  charToBin['('] = 0b101001;
+  charToBin[')'] = 0b1010011;
+  charToBin[':'] = 0b1000111;
+  charToBin['='] = 0b101110;
+  charToBin['-'] = 0b1011110;
+  charToBin['"'] = 0b1101101;
+  charToBin[','] = 0b1001100;
+  charToBin['\'']= 0b1100001;
+  charToBin['/'] = 0b101101;
+  charToBin[';'] = 0b1010101;
+  charToBin['_'] = 0b1110010;
+  charToBin['@'] = 0b1100101;
+  charToBin[' '] = 0b11111111;
+  
+  char diff = 'A'-'a';
+  char ch = 'A';
+  for(; ch<='Z'; ch++){
+    char lower = ch - diff;
+    charToBin[ch] = charToBin[lower];
+  }
 }
