@@ -178,7 +178,7 @@ int main(void)
 
         while(1)
         {
-	  fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_OUT);
+	  fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_IN);
                //LED ON
 	  i = readGPIO(fileHandleGPIO_7);
 	      //printf("i = %d\n", i);
