@@ -130,7 +130,9 @@ int readGPIO(int fileHandle)
         char value;
 	int ret = 0;
         read(fileHandle, &value, 1);  
-        printf("value is %c*\n",value);
+	int check = (int)value;
+        printf("value is %d*\n",check);
+	printf("the fileHandler is %d", fileHandle);
         if('0' == value)
         {
              // Current GPIO status low
