@@ -128,15 +128,15 @@ int writeGPIO(int fHandle, int val)
 int readGPIO(int fileHandle)
 {
         char value;
-	int ret;
+	int ret = 0;
         read(fileHandle, &value, 1);  
-        
+        printf("value is %c",value);
         if('0' == value)
         {
              // Current GPIO status low
                ret = 0;
         }
-        else
+        else if('1' == value)
         {
              // Current GPIO status high
                ret = 1;
@@ -180,7 +180,8 @@ int main(void)
         {
                //LED ON
               i = readGPIO(fileHandleGPIO_7);
-	      printf("i = %d", i);
+	      printf("i = %d\n", i);
+	      sleep(1);
 	      
         }
 
