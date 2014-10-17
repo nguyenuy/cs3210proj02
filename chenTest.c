@@ -127,26 +127,26 @@ int writeGPIO(int fHandle, int val)
 
 int readGPIO(int fileHandle)
 {
-        int value;
-
+        char value;
+	int ret;
         read(fileHandle, &value, 1);       
         if('0' == value)
         {
              // Current GPIO status low
                puts("BUTTON NOT PRESSED");
-               value = 0;
+               ret = 0;
         }
         else if ('1' == value)
         {
              // Current GPIO status high
                puts("BUTTON PRESSED");
-               value = 1;
+               ret = 1;
         }else{
 	  puts("something else");
-	  value = 1;
+	  ret = 1;
 	}
 
-        return value;
+        return ret;
 }
 
 int closeGPIO(int gpio, int fileHandle)
