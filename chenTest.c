@@ -181,7 +181,7 @@ int main(void)
 	  fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_IN);
                //LED ON
 	  i = readGPIO(fileHandleGPIO_7);
-	      //printf("i = %d\n", i);
+	  printf("i = %d\n", i);
 	  sleep(1);
 	  closeGPIO(GP_7, fileHandleGPIO_7);
         }
