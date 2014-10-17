@@ -190,7 +190,8 @@ int main(void)
   }
   */
   while(1){
-    printf("i = %d", readSignal());
+    int x = readSignal();
+    printf("i = %d", x);
     sleep(1);
 	  
   }
