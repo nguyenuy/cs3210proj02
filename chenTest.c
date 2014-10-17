@@ -129,22 +129,18 @@ int readGPIO(int fileHandle)
 {
         char value;
 	int ret;
-        read(fileHandle, &value, 1);       
+        read(fileHandle, &value, 1);  
+        
         if('0' == value)
         {
              // Current GPIO status low
-               puts("BUTTON NOT PRESSED");
                ret = 0;
         }
-        else if ('1' == value)
+        else
         {
              // Current GPIO status high
-               puts("BUTTON PRESSED");
                ret = 1;
-        }else{
-	  puts("something else");
-	  ret = 1;
-	}
+        }
 
         return ret;
 }
@@ -184,10 +180,8 @@ int main(void)
         {
                //LED ON
               i = readGPIO(fileHandleGPIO_7);
-	      if(i == 1) {
-		break;
-	      }
-               sleep(BLINK_TIME_SEC);
+	      puts(i);
+	      
         }
 
         closeGPIO(GP_7, fileHandleGPIO_7);
