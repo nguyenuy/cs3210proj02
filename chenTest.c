@@ -190,7 +190,7 @@ int main(void)
         }
 
 
-        while(true)
+        while(1)
         {
                //LED ON
                writeGPIO(fileHandleGPIO_LED, 1);
