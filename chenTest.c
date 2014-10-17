@@ -175,19 +175,18 @@ int main(void)
 
         puts("Starting LED blink GP_LED - gpio-3 on Galileo board.");
 
-        fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_IN);
-
 
         while(1)
         {
+	  fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_IN);
                //LED ON
-              i = readGPIO(fileHandleGPIO_7);
+	  i = readGPIO(fileHandleGPIO_7);
 	      //printf("i = %d\n", i);
-	      sleep(1);
-	      
+	  sleep(1);
+	  closeGPIO(GP_7, fileHandleGPIO_7);
         }
 
-        closeGPIO(GP_7, fileHandleGPIO_7);
+        
 
 
         puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
