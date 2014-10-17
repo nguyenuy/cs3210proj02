@@ -129,20 +129,22 @@ int readGPIO(int fileHandle)
 {
         int value;
 
-        read(fileHandle, &value, 1);
-	puts("value is %c", value);
+        read(fileHandle, &value, 1);       
         if('0' == value)
         {
              // Current GPIO status low
                puts("BUTTON NOT PRESSED");
                value = 0;
         }
-        else
+        else if ('1' == value)
         {
              // Current GPIO status high
                puts("BUTTON PRESSED");
                value = 1;
-        }
+        }else{
+	  puts("something else");
+	  value = 1;
+	}
 
         return value;
 }
