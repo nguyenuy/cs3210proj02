@@ -180,7 +180,7 @@ int main(void)
         {
                //LED ON
               i = readGPIO(fileHandleGPIO_7);
-	      puts(i);
+	      puts((char)i);
 	      
         }
 
