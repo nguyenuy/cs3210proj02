@@ -172,46 +172,25 @@ int closeGPIO(int gpio, int fileHandle)
 
 int main(void)
 {
-        int fileHandleGPIO_LED;
         int fileHandleGPIO_5;
-        int fileHandleGPIO_6;
-        int fileHandleGPIO_7;
         int i=0;
 
         puts("Starting LED blink GP_LED - gpio-3 on Galileo board.");
 
-        fileHandleGPIO_LED = openGPIO(GP_LED, GPIO_DIRECTION_OUT);
         fileHandleGPIO_5 = openGPIO(GP_5, GPIO_DIRECTION_IN);
-        fileHandleGPIO_6 = openGPIO(GP_6, GPIO_DIRECTION_OUT);
-        fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_OUT);
-
-
-        if(ERROR ==  fileHandleGPIO_LED)
-        {
-               return(-1);
-        }
 
 
         while(1)
         {
                //LED ON
-               writeGPIO(fileHandleGPIO_LED, 1);
-               readGPIO(fileHandleGPIO_5);
-               writeGPIO(fileHandleGPIO_6, 1);
-               writeGPIO(fileHandleGPIO_7, 1);
-               sleep(BLINK_TIME_SEC);
-
-               //LED OFF
-               writeGPIO(fileHandleGPIO_LED, 0);
-               writeGPIO(fileHandleGPIO_6, 0);
-               writeGPIO(fileHandleGPIO_7, 0);
+              i = readGPIO(fileHandleGPIO_5);
+	      if(i == 1) {
+		break;
+	      }
                sleep(BLINK_TIME_SEC);
         }
 
-        closeGPIO(GP_LED, fileHandleGPIO_LED);
         closeGPIO(GP_5, fileHandleGPIO_5);
-        closeGPIO(GP_6, fileHandleGPIO_6);
-        closeGPIO(GP_7, fileHandleGPIO_7);
 
 
         puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
