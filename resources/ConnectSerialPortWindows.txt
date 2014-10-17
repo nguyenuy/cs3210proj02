@@ -1,0 +1,10 @@
+1. Open Putty
+2. Connect USB Serial Port
+3. Open "Device Manager"
+4. Scroll Down to "PORTS (COM & LPT)
+5. Take note of what COMX. Could be COM1, COM2, etc.
+
+6. Go to Putty
+7. Click "Serial" for "Connection type:"
+8. Set the "Speed" to "115200"
+9. Click "Open" and you will have a connection.
