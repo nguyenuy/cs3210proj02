@@ -16,4 +16,6 @@ $(TARGET): $(TARGET).c
 
 clean:
 	$(RM) $(TARGET)
-	
+
+test:chenTest.c
+	gcc chenTest.c -o test
