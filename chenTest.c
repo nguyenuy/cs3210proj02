@@ -172,25 +172,25 @@ int closeGPIO(int gpio, int fileHandle)
 
 int main(void)
 {
-        int fileHandleGPIO_5;
+        int fileHandleGPIO_7;
         int i=0;
 
         puts("Starting LED blink GP_LED - gpio-3 on Galileo board.");
 
-        fileHandleGPIO_5 = openGPIO(GP_5, GPIO_DIRECTION_IN);
+        fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_IN);
 
 
         while(1)
         {
                //LED ON
-              i = readGPIO(fileHandleGPIO_5);
+              i = readGPIO(fileHandleGPIO_7);
 	      if(i == 1) {
 		break;
 	      }
                sleep(BLINK_TIME_SEC);
         }
 
-        closeGPIO(GP_5, fileHandleGPIO_5);
+        closeGPIO(GP_7, fileHandleGPIO_7);
 
 
         puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
