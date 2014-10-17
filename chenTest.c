@@ -130,7 +130,7 @@ int readGPIO(int fileHandle)
         int value;
 
         read(fileHandle, &value, 1);
-
+	puts("value is %c", value);
         if('0' == value)
         {
              // Current GPIO status low
