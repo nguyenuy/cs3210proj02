@@ -190,11 +190,15 @@ int main(void)
   }
   */
   while(1){
-    printf("__\n");
-    int x = readSignal();
-    printf("i = %d\n", x);
-    sleep(1);
-	  
+    if(readSignal() == 1){
+      printf("read a press\n");
+      while(readSignal() == 1){
+	;
+      }
+    }else{
+
+
+    }	  
   }
         
 
