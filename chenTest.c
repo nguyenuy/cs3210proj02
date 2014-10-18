@@ -172,6 +172,13 @@ int readSignal(){
   return x;
 }
 
+void printArray(int[] A, int n){
+  for(int i=0; i<n; i++){
+    printf("%d\t", A[i]);
+  }
+  printf("\n");
+}
+
 int main(void)
 {
   puts("Starting LED blink GP_LED - gpio-3 on Galileo board.");
@@ -189,22 +196,30 @@ int main(void)
   closeGPIO(GP_7, fileHandleGPIO_7);
   }
   */
-  int unit = 100;
+  const int BUF_LEN = 16;
+  int unit = 4;
   while(1){
-    int cnt1 = 0;
-    int cnt2 = 0;
     if(readSignal() == 1){
-
-      while(readSignal() == 1){
-	cnt1++;
-	usleep(unit);
+      int[] buf = int[BUF_LEN];
+      int cnt = 0;
+      while(1){
+	int cnt1 = 0, cnt0 = 0;
+	while(readSignal() == 1){
+	  cnt1++;
+	  usleep(unit);
+	}
+	while(readSignal() == 0){
+	  cnt0++;
+	  usleep(unit);
+	}
+	if(cnt0 > 100){
+	  buf[cnt++] = cnt1;
+	  break;
+	}else{
+	  buf[cnt++] = cnt1;
+	}
       }
-      while(readSignal() == 0){
-	cnt2++;
-	usleep(unit);
-      }
-      printf("press time is %d\n", cnt1);
-      printf("release time is %d\n\n", cnt2);
+      printArray(buf, BUF_LEN);
     }
   }
         
