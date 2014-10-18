@@ -190,23 +190,18 @@ int main(void)
   }
   */
   while(1){
+    int cnt1 = 0;
+    int cnt2 = 0;
     if(readSignal() == 1){
-      int cnt1 = 0;
-      int unit = 5; // unit in us
       do{
 	cnt1++;
-	usleep(unit);
       }while(readSignal() == 1);
-      int cnt2 = 0;
       while(readSignal() == 0){
 	cnt2++;
-	usleep(unit);
       }
-      printf("time for press is %d\n", cnt1);
-      printf("time for press is %d\n", cnt2);
-    }else{
-      ;
-    }	  
+      printf("press time is %d", cnt1);
+      printf("release time is %d", cnt2);
+    }
   }
         
 
