@@ -189,15 +189,18 @@ int main(void)
   closeGPIO(GP_7, fileHandleGPIO_7);
   }
   */
+  int unit = 2;
   while(1){
     int cnt1 = 0;
     int cnt2 = 0;
     if(readSignal() == 1){
       do{
 	cnt1++;
+	usleep(unit);
       }while(readSignal() == 1);
       while(readSignal() == 0){
 	cnt2++;
+	usleep(unit);
       }
       printf("press time is %d", cnt1);
       printf("release time is %d", cnt2);
