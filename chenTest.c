@@ -183,7 +183,7 @@ void printArray(int* A, int n){
 void init(int* A, int n){
   int i=0;
   for(; i<n; i++){
-    A[i] = 0;
+    A[i] = -2;
   }
 }
 
@@ -205,8 +205,9 @@ int main(void)
   }
   */
   const int BUF_LEN = 16;
-  int LONG_WAIT = 100;
-  int unit = 4;
+  const int LONG_WAIT = 100;
+  const int unit = 4;
+  const int MAX_DIT = 15;
   while(1){
     if(readSignal() == 1){
       printf("receive a press\n");
@@ -227,10 +228,10 @@ int main(void)
 	    usleep(unit);
 	}
 	if(cnt0 > LONG_WAIT){
-	  buf[cnt++] = cnt1;
+	  buf[cnt++] = (cnt1 > MAX_DIT?1:0);
 	  break;
 	}else{
-	  buf[cnt++] = cnt1;
+	  buf[cnt++] = (cnt1 > MAX_DIT?1:0);
 	}
       }
       printArray(buf, BUF_LEN);
