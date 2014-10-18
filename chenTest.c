@@ -191,13 +191,12 @@ int main(void)
   */
   while(1){
     if(readSignal() == 1){
-      printf("read a press\n");
       int cnt1 = 0;
-      int unit = 10; // unit in us
-      while(readSignal() == 1){
+      int unit = 5; // unit in us
+      do{
 	cnt1++;
 	usleep(unit);
-      }
+      }while(readSignal() == 1);
       int cnt2 = 0;
       while(readSignal() == 0){
 	cnt2++;
