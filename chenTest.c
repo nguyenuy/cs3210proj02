@@ -202,8 +202,8 @@ int main(void)
 	cnt2++;
 	usleep(100);
       }
-      printf("time for press is %d", cnt1);
-      printf("time for press is %d", cnt2);
+      printf("time for press is %d\n", cnt1);
+      printf("time for press is %d\n", cnt2);
     }else{
       ;
     }	  
