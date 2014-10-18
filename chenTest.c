@@ -192,12 +192,20 @@ int main(void)
   while(1){
     if(readSignal() == 1){
       printf("read a press\n");
+      int cnt1 = 0;//unit: 100 us
       while(readSignal() == 1){
-	;
+	cnt1++;
+	usleep(100);
       }
+      int cnt2 = 0;
+      while(readSignal() == 0){
+	cnt2++;
+	usleep(100);
+      }
+      printf("time for press is %d", cnt1);
+      printf("time for press is %d", cnt2);
     }else{
-
-
+      ;
     }	  
   }
         
