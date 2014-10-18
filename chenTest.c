@@ -175,9 +175,16 @@ int readSignal(){
 void printArray(int* A, int n){
   int i = 0;
   for(; i<n; i++){
-    printf("%d\t", A[i]);
+    printf("%d  ", A[i]);
   }
   printf("\n");
+}
+
+void init(int* A, int n){
+  int i=0;
+  for(; i<n; i++){
+    A[i] = 0;
+  }
 }
 
 int main(void)
@@ -204,6 +211,7 @@ int main(void)
     if(readSignal() == 1){
       printf("receive a press\n");
       int buf[BUF_LEN];
+      init(buf,BUF_LEN);
       int cnt = 0;
       while(1){
 	int cnt1 = 0, cnt0 = 0;
@@ -213,9 +221,10 @@ int main(void)
 	}
 	while(readSignal() == 0){
 	  cnt0++;
-	  usleep(unit);
 	  if(cnt0 > LONG_WAIT)
 	    break;
+	  else
+	    usleep(unit);
 	}
 	if(cnt0 > LONG_WAIT){
 	  buf[cnt++] = cnt1;
