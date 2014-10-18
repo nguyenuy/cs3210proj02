@@ -198,9 +198,11 @@ int main(void)
   }
   */
   const int BUF_LEN = 16;
+  int LONG_WAIT = 100;
   int unit = 4;
   while(1){
     if(readSignal() == 1){
+      printf("receive a press\n");
       int buf[BUF_LEN];
       int cnt = 0;
       while(1){
@@ -212,8 +214,10 @@ int main(void)
 	while(readSignal() == 0){
 	  cnt0++;
 	  usleep(unit);
+	  if(cnt0 > LONG_WAIT)
+	    break;
 	}
-	if(cnt0 > 100){
+	if(cnt0 > LONG_WAIT){
 	  buf[cnt++] = cnt1;
 	  break;
 	}else{
