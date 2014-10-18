@@ -172,8 +172,9 @@ int readSignal(){
   return x;
 }
 
-void printArray(int[] A, int n){
-  for(int i=0; i<n; i++){
+void printArray(int* A, int n){
+  int i = 0;
+  for(; i<n; i++){
     printf("%d\t", A[i]);
   }
   printf("\n");
@@ -200,7 +201,7 @@ int main(void)
   int unit = 4;
   while(1){
     if(readSignal() == 1){
-      int[] buf = int[BUF_LEN];
+      int buf[BUF_LEN];
       int cnt = 0;
       while(1){
 	int cnt1 = 0, cnt0 = 0;
