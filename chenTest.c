@@ -189,7 +189,7 @@ int main(void)
   closeGPIO(GP_7, fileHandleGPIO_7);
   }
   */
-  int unit = 2;
+  int unit = 8;
   while(1){
     int cnt1 = 0;
     int cnt2 = 0;
