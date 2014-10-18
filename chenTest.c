@@ -192,7 +192,7 @@ int main(void)
   while(1){
     printf("__\n");
     int x = readSignal();
-    printf("i =", x);
+    printf("i = %d\n", x);
     sleep(1);
 	  
   }
