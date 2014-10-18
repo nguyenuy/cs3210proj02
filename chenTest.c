@@ -194,7 +194,7 @@ int main(void)
     int cnt1 = 0;
     int cnt2 = 0;
     if(readSignal() == 1){
-      printf("feel a press\n");
+
       while(readSignal() == 1){
 	cnt1++;
 	usleep(unit);
@@ -203,8 +203,8 @@ int main(void)
 	cnt2++;
 	usleep(unit);
       }
-      printf("press time is %d", cnt1);
-      printf("release time is %d", cnt2);
+      printf("press time is %d\n", cnt1);
+      printf("release time is %d\n\n", cnt2);
     }
   }
         
