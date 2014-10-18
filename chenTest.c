@@ -239,6 +239,7 @@ int main(void)
       printArray(buf, BUF_LEN);
       int key = getDecodeKey(buf, BUF_LEN);
       char result = morseMap[key];
+      printf("Do you mean %c?\n", result);
     }
   }
         
