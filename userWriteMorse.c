@@ -328,13 +328,13 @@ int string_to_morse(char *buf, int length) {
     for(; shift>=0; shift--){
       short mask = 1<<shift;
       if((mask & bin) != 0){
-            *(p++) = 'd';
+            //*(p++) = 'd';
             *(p++) = 'i';
-            *(p++) = 't';
+            //*(p++) = 't';
           } else {
-            *(p++) = 'd';
+            //*(p++) = 'd';
             *(p++) = 'a';
-            *(p++) = 'h';
+            //*(p++) = 'h';
         }
       *(p++) = (shift==0?' ':'-');
         }
@@ -369,4 +369,5 @@ int string_to_flash_led(char* buf) {
 
         }
     }
+
 }
