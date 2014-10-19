@@ -365,11 +365,15 @@ int string_to_flash_led(char* buf) {
             flash_led(3, 1, 0); //flash_led (gpio 3, 1 second, 0 = dit)
         } else if (ch == 'a') { //dah
             flash_led(3, 3, 1); //flash_led (gpio 3, 3 seconds, 1 = dah)
+        } else if (ch == '-') { //between characters
+
+        } else if (ch == ' ') { //spaces
+
         }
 
-        //Spaces
-        if (ch == ' ' || i == (length-1)) {
-            //still thinking about how to handle this correctly
+        
+        if (i == (transLength-1)) {
+            break;
         }
     }
 
