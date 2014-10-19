@@ -9,9 +9,9 @@
 #include <string.h>
 
 #define GP_LED                 (3) // GPIO3 is GP LED - LED connected between Cypress CY8C9540A and RTC battery header
-#define GP_5				   (17) //GPIO17 corresponds to Arduino PIN5
-#define GP_6				   (24) //GPIO24 corresponds to Arduino PIN6
-#define GP_7				   (27) //GPIO27 corresponds to Arduino PIN7
+#define GP_5                   (17) //GPIO17 corresponds to Arduino PIN5
+#define GP_6                   (24) //GPIO24 corresponds to Arduino PIN6
+#define GP_7                   (27) //GPIO27 corresponds to Arduino PIN7
 #define BLINK_TIME_SEC         (1) // 1 seconds blink time
 #define GPIO_DIRECTION_IN      (1)
 #define GPIO_DIRECTION_OUT     (0)
@@ -159,17 +159,17 @@ int closeGPIO(int gpio, int fileHandle)
 
 int main(void)
 {
-		char msgstring[1000];
-		printf("Enter a string: ");
-		fgets(msgstring,1000,stdin);
-		printf("Your string is: %s", msgstring);
-		initialize_character_array();
+        char msgstring[1000];
+        printf("Enter a string: ");
+        fgets(msgstring,1000,stdin);
+        printf("Your string is: %s", msgstring);
+        initialize_character_array();
 
-		//TODO: IMPLEMENT ENGLISH TO MORSE TRANSLATION (COPY FROM PROJ01)
+        //TODO: IMPLEMENT ENGLISH TO MORSE TRANSLATION (COPY FROM PROJ01)
 
-		//TODO: IMPLEMENT WRITE TO LED or LEDS. NEED TO FIGURE OUT DESIGN
+        //TODO: IMPLEMENT WRITE TO LED or LEDS. NEED TO FIGURE OUT DESIGN
 
-		//Modify Code Below Later 
+        //Modify Code Below Later 
         int fileHandleGPIO_LED;
         int fileHandleGPIO_5;
         int fileHandleGPIO_6;
@@ -287,60 +287,86 @@ void initialize_character_array(){
 
 int flash_led(int gpio, int seconds, int type) {
 
-	int filehandle_LEDGPIO;
+    int filehandle_LEDGPIO;
 
-	filehandle_LEDGPIO = openGPIO(GP_LED, GPIO_DIRECTION_OUT);
+    filehandle_LEDGPIO = openGPIO(GP_LED, GPIO_DIRECTION_OUT);
 
-	if(filehandle_LEDGPIO == ERROR) {
-		return -1;
-	}
+    if(filehandle_LEDGPIO == ERROR) {
+        return -1;
+    }
 
-	//LED ON
-	writeGPIO(filehandle_LEDGPIO, 1);
-	sleep(seconds);
+    //LED ON
+    writeGPIO(filehandle_LEDGPIO, 1);
+    sleep(seconds);
 
-	//LED OFF
-	writeGPIO(filehandle_LEDGPIO, 0);
-	sleep(type);
+    //LED OFF
+    writeGPIO(filehandle_LEDGPIO, 0);
+    sleep(type);
 
 
-	closeGPIO(GP_LED, filehandle_LEDGPIO);	
+    closeGPIO(GP_LED, filehandle_LEDGPIO);  
 
-	return 0;
+    return 0;
 }
 
 int string_to_morse(char *buf, int length) {
 
-	int i=0;
-	char *p = translated;
-	for(; i<length; i++){
-		char ch = *(buf+i);
-		int shift = 15;
-		int bin = charToBin[ch];
-		for( ; shift>=0; shift--){
-		  short mask = 1<<shift;
-		  if((mask & bin) != 0)
-			break;
-		}
+    int i=0;
+    char *p = translated;
+    for(; i<length; i++){
+        char ch = *(buf+i);
+        int shift = 15;
+        int bin = charToBin[ch];
+        for( ; shift>=0; shift--){
+          short mask = 1<<shift;
+          if((mask & bin) != 0)
+            break;
+        }
 
-	shift--;
+    shift--;
 
-	for(; shift>=0; shift--){
-	  short mask = 1<<shift;
-	  if((mask & bin) != 0){
-			*(p++) = 'd';
-			*(p++) = 'i';
-			*(p++) = 't';
-		  } else {
-			*(p++) = 'd';
-			*(p++) = 'a';
-			*(p++) = 'h';
-		}
-	  *(p++) = (shift==0?' ':'-');
-		}
-	}
+    for(; shift>=0; shift--){
+      short mask = 1<<shift;
+      if((mask & bin) != 0){
+            *(p++) = 'd';
+            *(p++) = 'i';
+            *(p++) = 't';
+          } else {
+            *(p++) = 'd';
+            *(p++) = 'a';
+            *(p++) = 'h';
+        }
+      *(p++) = (shift==0?' ':'-');
+        }
+    }
 
-	*(p) = '\0';
+    *(p) = '\0';
 
-	return 0;
+    return 0;
+}
+
+
+int string_to_flash_led(char* buf) {
+    int length = 0;
+    int i = 0;
+    //String Length, Not elegant but should work
+    for(length=0; buf[length]!='\0'; length++);
+    
+
+    //Iterate over encoded string
+    //TODO: handle LED flashing based on next character
+    //TODO: import GPIO file handles and read/write procedures
+    for (i=0; i < length; i++) {
+        char ch = *(buf+i);
+        if (ch == 'i') { //dit
+
+        } else if (ch == 'a') { //dah
+
+        }
+
+        //Spaces
+        if (ch == ' ' || i == (length-1)) {
+
+        }
+    }
 }
