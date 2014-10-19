@@ -37,6 +37,7 @@
 #define CHAR_SIZE              (256)
 short charToBin[CHAR_SIZE];
 char translated[1000];
+int transLength;
 
 //Putting Morse Code Function Declarations Here
 void initialize_character_array();
@@ -164,6 +165,7 @@ int main(void)
         fgets(msgstring,1000,stdin);
         printf("Your string is: %s", msgstring);
         initialize_character_array();
+        transLength = 0;
 
         //TODO: IMPLEMENT ENGLISH TO MORSE TRANSLATION (COPY FROM PROJ01)
 
@@ -330,13 +332,16 @@ int string_to_morse(char *buf, int length) {
       if((mask & bin) != 0){
             //*(p++) = 'd';
             *(p++) = 'i';
+            transLength++;
             //*(p++) = 't';
           } else {
             //*(p++) = 'd';
             *(p++) = 'a';
+            transLength++;
             //*(p++) = 'h';
         }
       *(p++) = (shift==0?' ':'-');
+      transLength++;
         }
     }
 
@@ -347,26 +352,24 @@ int string_to_morse(char *buf, int length) {
 
 
 int string_to_flash_led(char* buf) {
-    int length = 0;
     int i = 0;
-    //String Length, Not elegant but should work
-    for(length=0; buf[length]!='\0'; length++);
     
+    //added a var called transLength for the length so we don't have to waste time calculating it twice (it's calc'd in the string_to_morse function)
 
     //Iterate over encoded string
     //TODO: handle LED flashing based on next character
     //TODO: import GPIO file handles and read/write procedures
-    for (i=0; i < length; i++) {
+    for (i=0; i < transLength; i++) {
         char ch = *(buf+i);
         if (ch == 'i') { //dit
-
+            flash_led(3, 1, 0); //flash_led (gpio 3, 1 second, 0 = dit)
         } else if (ch == 'a') { //dah
-
+            flash_led(3, 3, 1); //flash_led (gpio 3, 3 seconds, 1 = dah)
         }
 
         //Spaces
         if (ch == ' ' || i == (length-1)) {
-
+            //still thinking about how to handle this correctly
         }
     }
 
