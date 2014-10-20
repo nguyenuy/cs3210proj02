@@ -3,6 +3,10 @@ Project Log
 
 
 ###Project 2 Progress Log
+10/19 - [Ses, Uy] finish implementation of userWriteMorse.c. Need to test on board and add minor modifications to timing.
+
+10/17 - Got push button logic to work [all].[Chen] completed implementation of userReadMorse.c
+
 10/15 - Compiled userMorseWrite.c which only blinks LEDs now on pins GPIO 3,5,6,7 [Ses,Uy]
 
 10/14 - Installed Debian onto SD Card. (Ses has documentation on this) Using v1.2
@@ -24,8 +28,8 @@ Project Log
 ###Project 2 Milestones (Full List)
 1. User space morse code to flash LED
 2. User space morse code to read from switch
-3. Build Yocto Linux infrastructure (or load Debian) so that can load kernel module
+3. <strike>Build Yocto Linux infrastructure (or load Debian) so that can load kernel module</strike>
 4. Kernel Module - Implement read side of morse character 5. device in kernel. GPIO signal from board to character
 6. Kernel Module - Implement write side.
 7. Implement User Space Chat Program  
-8. Complete Project Write-Up
+8. Complete Project Write-Up - **Remember Timing/Performance Implications!!!!!**
