@@ -7,15 +7,16 @@ CC = gcc
 CFLAGS  = -g -Wall
 
 # the build target executable:
-TARGET = userWriteMorse
 
-all: $(TARGET)
+all: userWriteMorse userReadMorse
 
-$(TARGET): $(TARGET).c
-	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c
+userWriteMorse: userWriteMorse.c
+	$(CC) $(CFLAGS) -o userWriteMorse userWriteMorse.c
 
+userReadMorse: userReadMorse.c
+	$(CC) $(CFLAGS) -o userReadMorse userReadMorse.c
 clean:
-	$(RM) $(TARGET)
+	$(RM) userWriteMorse userReadMorse
 
-test:chenTest.c
+test: chenTest.c
 	gcc chenTest.c -o test
