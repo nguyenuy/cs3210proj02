@@ -160,17 +160,25 @@ int closeGPIO(int gpio, int fileHandle)
 
 int main(void)
 {
+        //Initialization
+        initialize_character_array();
+
+        //Get User Input
         char msgstring[1000];
+        int msglength;
         printf("Enter a string: ");
         fgets(msgstring,1000,stdin);
         printf("Your string is: %s", msgstring);
-        initialize_character_array();
+
+        for(msglength=0; msgstring[msglength]!='\0'; ++msglength);
+
+        //String Processing/Flashing
         transLength = 0;
+        string_to_morse(msgstring, msglength);
+        string_to_flash_led(translated);
+        
 
-        //TODO: IMPLEMENT ENGLISH TO MORSE TRANSLATION (COPY FROM PROJ01)
-
-        //TODO: IMPLEMENT WRITE TO LED or LEDS. NEED TO FIGURE OUT DESIGN
-
+        //TODO: REMOVE CODE BELOW LATER
         //Modify Code Below Later 
         int fileHandleGPIO_LED;
         int fileHandleGPIO_5;
@@ -291,7 +299,7 @@ int flash_led(int gpio, int seconds, int type) {
 
     int filehandle_LEDGPIO;
 
-    filehandle_LEDGPIO = openGPIO(GP_LED, GPIO_DIRECTION_OUT);
+    filehandle_LEDGPIO = openGPIO(gpio, GPIO_DIRECTION_OUT);
 
     if(filehandle_LEDGPIO == ERROR) {
         return -1;
@@ -306,11 +314,12 @@ int flash_led(int gpio, int seconds, int type) {
     sleep(type);
 
 
-    closeGPIO(GP_LED, filehandle_LEDGPIO);  
+    closeGPIO(gpio, filehandle_LEDGPIO);  
 
     return 0;
 }
 
+//string_to_morse encodes a string buffer and puts into globabl variable 'translated'
 int string_to_morse(char *buf, int length) {
 
     int i=0;
@@ -357,24 +366,19 @@ int string_to_flash_led(char* buf) {
     //added a var called transLength for the length so we don't have to waste time calculating it twice (it's calc'd in the string_to_morse function)
 
     //Iterate over encoded string
-    //TODO: handle LED flashing based on next character
-    //TODO: import GPIO file handles and read/write procedures
+    //TODO: Change/keep wait times...if changed will have to change in flash_led(...) as well
+    //References: Morse Code Timing link at the beginning of this file 
     for (i=0; i < transLength; i++) {
         char ch = *(buf+i);
         if (ch == 'i') { //dit
-            flash_led(3, 1, 0); //flash_led (gpio 3, 1 second, 0 = dit)
+            flash_led(GP_LED, 1, 0); //flash_led (gpio 3, 1 second, 0 = dit)
         } else if (ch == 'a') { //dah
-            flash_led(3, 3, 1); //flash_led (gpio 3, 3 seconds, 1 = dah)
+            flash_led(GP_LED, 3, 1); //flash_led (gpio 3, 3 seconds, 1 = dah)
         } else if (ch == '-') { //between characters
-
+            sleep(3);
         } else if (ch == ' ') { //spaces
-
-        }
-
-        
-        if (i == (transLength-1)) {
-            break;
+            sleep(7);
         }
     }
-
+    return 1;
 }
