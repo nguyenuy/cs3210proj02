@@ -41,7 +41,7 @@ int transLength;
 
 //Putting Morse Code Function Declarations Here
 void initialize_character_array();
-int flash_led(int gpio, int seconds, int type);
+int flash_led(int gpio, int seconds);
 int string_to_flash_led(char *buf);
 int string_to_morse(char *buf, int length);
 
@@ -295,7 +295,7 @@ void initialize_character_array(){
   }
 }
 
-int flash_led(int gpio, int seconds, int type) {
+int flash_led(int gpio, int seconds) {
 
     int filehandle_LEDGPIO;
 
@@ -311,8 +311,6 @@ int flash_led(int gpio, int seconds, int type) {
 
     //LED OFF
     writeGPIO(filehandle_LEDGPIO, 0);
-    sleep(type);
-
 
     closeGPIO(gpio, filehandle_LEDGPIO);  
 
@@ -371,9 +369,9 @@ int string_to_flash_led(char* buf) {
     for (i=0; i < transLength; i++) {
         char ch = *(buf+i);
         if (ch == 'i') { //dit
-            flash_led(GP_LED, 1, 0); //flash_led (gpio 3, 1 second, 0 = dit)
+            flash_led(GP_LED, 1); //flash_led (gpio 3, 1 second)
         } else if (ch == 'a') { //dah
-            flash_led(GP_LED, 3, 1); //flash_led (gpio 3, 3 seconds, 1 = dah)
+            flash_led(GP_LED, 3); //flash_led (gpio 3, 3 seconds)
         } else if (ch == '-') { //between characters
             sleep(3);
         } else if (ch == ' ') { //spaces
