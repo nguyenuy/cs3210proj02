@@ -353,7 +353,7 @@ int main(void)
 
         //String Processing/Flashing
         transLength = 0;
-        string_to_morse(msgstring, 1000);
+        string_to_morse(msgstring, 10);
         printf("proceeding to flashString");
         createFlashString();
         flashLED(3);
