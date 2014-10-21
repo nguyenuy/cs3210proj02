@@ -350,13 +350,12 @@ int main(void)
         msglength = strlen(msgstring);
         printf("String length = %d", msglength);
         
-/*
+
         //String Processing/Flashing
         transLength = 0;
         string_to_morse(msgstring, msglength);
         createFlashString();
         flashLED(3);
-*/
         puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
 
         return 0;
