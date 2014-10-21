@@ -1,5 +1,4 @@
-/* This code blinks LEDs connected to Galileo GPIO3 (Arduino PIN13), GPIO17,
- * GPIO24 and GPIO27 (pins 5 6 and 7)
+/* This code blinks the galileo LED based on string input from the user translated into morse code.
  */
 
 #include <stdlib.h>
@@ -37,13 +36,9 @@
 #define CHAR_SIZE              (256)
 short charToBin[CHAR_SIZE];
 char translated[1000];
+char flashStr[1000];
 int transLength;
-
-//Putting Morse Code Function Declarations Here
-void initialize_character_array();
-int flash_led(int gpio, int seconds);
-int string_to_flash_led(char *buf);
-int string_to_morse(char *buf, int length);
+int flashLength;
 
 
 int openGPIO(int gpio, int direction )
@@ -157,77 +152,6 @@ int closeGPIO(int gpio, int fileHandle)
         return(0);
 }
 
-
-int main(void)
-{
-        //Initialization
-        initialize_character_array();
-
-        //Get User Input
-        char msgstring[1000];
-        int msglength;
-        printf("Enter a string: ");
-        fgets(msgstring,1000,stdin);
-        printf("Your string is: %s", msgstring);
-
-        for(msglength=0; msgstring[msglength]!='\0'; ++msglength);
-
-        //String Processing/Flashing
-        transLength = 0;
-        string_to_morse(msgstring, msglength);
-        string_to_flash_led(translated);
-        
-
-        //TODO: REMOVE CODE BELOW LATER
-        //Modify Code Below Later 
-        int fileHandleGPIO_LED;
-        int fileHandleGPIO_5;
-        int fileHandleGPIO_6;
-        int fileHandleGPIO_7;
-        int i=0;
-
-        puts("Starting LED blink GP_LED - gpio-3 on Galileo board.");
-
-        fileHandleGPIO_LED = openGPIO(GP_LED, GPIO_DIRECTION_OUT);
-        fileHandleGPIO_5 = openGPIO(GP_5, GPIO_DIRECTION_OUT);
-        fileHandleGPIO_6 = openGPIO(GP_6, GPIO_DIRECTION_OUT);
-        fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_OUT);
-
-
-        if(ERROR ==  fileHandleGPIO_LED)
-        {
-               return(-1);
-        }
-
-
-        for(i=0; i< 10; i++)
-        {
-               //LED ON
-               writeGPIO(fileHandleGPIO_LED, 1);
-               writeGPIO(fileHandleGPIO_5, 1);
-               writeGPIO(fileHandleGPIO_6, 1);
-               writeGPIO(fileHandleGPIO_7, 1);
-               sleep(BLINK_TIME_SEC);
-
-               //LED OFF
-               writeGPIO(fileHandleGPIO_LED, 0);
-               writeGPIO(fileHandleGPIO_5, 0);
-               writeGPIO(fileHandleGPIO_6, 0);
-               writeGPIO(fileHandleGPIO_7, 0);
-               sleep(BLINK_TIME_SEC);
-        }
-
-        closeGPIO(GP_LED, fileHandleGPIO_LED);
-        closeGPIO(GP_5, fileHandleGPIO_5);
-        closeGPIO(GP_6, fileHandleGPIO_6);
-        closeGPIO(GP_7, fileHandleGPIO_7);
-
-
-        puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
-
-        return 0;
-}
-
 //Morse Code Definitions Here
 void initialize_character_array(){
   int i=0;
@@ -295,7 +219,7 @@ void initialize_character_array(){
   }
 }
 
-int flash_led(int gpio, int seconds) {
+int flash(int gpio, int seconds) {
 
     int filehandle_LEDGPIO;
 
@@ -324,6 +248,10 @@ int string_to_morse(char *buf, int length) {
     char *p = translated;
     for(; i<length; i++){
         char ch = *(buf+i);
+        if(ch == ' ') {
+                *(p++) = 'S';
+                continue;
+        }
         int shift = 15;
         int bin = charToBin[ch];
         for( ; shift>=0; shift--){
@@ -357,26 +285,75 @@ int string_to_morse(char *buf, int length) {
     return 0;
 }
 
-
-int string_to_flash_led(char* buf) {
-    int i = 0;
-    
-    //added a var called transLength for the length so we don't have to waste time calculating it twice (it's calc'd in the string_to_morse function)
-
-    //Iterate over encoded string
-    //TODO: Change/keep wait times...if changed will have to change in flash_led(...) as well
-    //References: Morse Code Timing link at the beginning of this file 
-    for (i=0; i < transLength; i++) {
-        char ch = *(buf+i);
-        if (ch == 'i') { //dit
-            flash_led(GP_LED, 1); //flash_led (gpio 3, 1 second)
-        } else if (ch == 'a') { //dah
-            flash_led(GP_LED, 3); //flash_led (gpio 3, 3 seconds)
-        } else if (ch == '-') { //between characters
-            sleep(3);
-        } else if (ch == ' ') { //spaces
-            sleep(7);
+void createFlashString() {
+        int i=0;
+        char *p = flashStr;
+        for(i; i<transLength; i++) {
+                char current = *(translated+i);
+                char next = *(translated+i+1);
+                
+                if(current == 'i') {
+                        *(p++) = 'f';
+                        *(p++) = 1;
+                        flashLength += 2;
+                } else if (current == 'a') {
+                        *(p++) = 'f';
+                        *(p++) = 3;
+                        flashLength += 2;
+                } else if (current == ' ') {
+                        if(next == 'S') {
+                                *(p++) = 'w';
+                                *(p++) = 7;
+                        } else {
+                                *(p++) = 'w';
+                                *(p++) = 3;
+                        }
+                        flashLength += 2;
+                } else if(current == '-') {
+                        *(p++) = 'w';
+                        *(p++) = 1;
+                        flashLength += 2;
+                }
+                
+                
         }
-    }
-    return 1;
+}
+
+void flashLED(int gpio) {
+        int i=0;
+        for(i; i<flashLength; i+=2) {
+                char current = *(flashStr+i);
+                char next = *(flashStr+i);
+                
+                if(current == 'f') {
+                        flash(gpio, next);
+                } else if(current == 'w') {
+                        sleep(next);
+                }
+        }
+}
+
+int main(void)
+{
+        //Initialization
+        initialize_character_array();
+
+        //Get User Input
+        char msgstring[1000];
+        int msglength;
+        printf("Enter a string: ");
+        fgets(msgstring,1000,stdin);
+        printf("Your string is: %s", msgstring);
+
+        for(msglength=0; msgstring[msglength]!='\0'; ++msglength);
+
+        //String Processing/Flashing
+        transLength = 0;
+        string_to_morse(msgstring, msglength);
+        createFlashString();
+        flashLED(3);
+
+        puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
+
+        return 0;
 }
