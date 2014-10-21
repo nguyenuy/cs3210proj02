@@ -34,8 +34,7 @@ Unless otherwise agreed by Intel in writing, you may not remove or alter this no
 
 */
 
-/* This code blinks LEDs connected to Galileo GPIO3 (Arduino PIN13), GPIO17,
- * GPIO24 and GPIO27 (pins 5 6 and 7)
+/* This code gets character inputs from the user using morse code and a button
  */
 
 #include <stdlib.h>
@@ -230,10 +229,10 @@ int main(void)
 	    usleep(unit);
 	}
 	if(cnt0 > LONG_WAIT){
-	  buf[cnt++] = (cnt1 > MAX_DIT?1:0);
+	  buf[cnt++] = (cnt1 > MAX_DIT?0:1);
 	  break;
 	}else{
-	  buf[cnt++] = (cnt1 > MAX_DIT?1:0);
+	  buf[cnt++] = (cnt1 > MAX_DIT?0:1);
 	}
       }
       printArray(buf, BUF_LEN);
