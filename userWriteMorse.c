@@ -336,6 +336,17 @@ void flashLED(int gpio) {
         }
 }
 
+int getStringLength(char* buff) {
+        int i=0;
+        char current = *(buff);
+        while(current != '\0') {
+                i++;
+                current = *(buff+i);
+        }
+        i--;
+        return i;
+}
+
 int main(void)
 {
         //Initialization
@@ -347,8 +358,9 @@ int main(void)
         printf("Enter a string: ");
         fgets(msgstring,1000,stdin);
         printf("Your string is: %s", msgstring);
-
-        for(msglength=0; msgstring[msglength]!='\0'; ++msglength);
+        msglength = getStringLength(msgstring);
+        printf("String length = %d", msglength);
+        
 
         //String Processing/Flashing
         transLength = 0;
