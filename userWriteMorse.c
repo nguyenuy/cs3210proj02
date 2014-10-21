@@ -327,9 +327,7 @@ void flashLED(int gpio) {
                 
                 if(current == 'f') {
                         flash(gpio, next);
-                        printf("Flashing for %d seconds.\n", next);
                 } else if(current == 'w') {
-                        printf("Sleeping for %d seconds.\n", next);
                         sleep(next);
                         
                 }
@@ -346,19 +344,17 @@ int main(void)
         int msglength;
         printf("Enter a string: ");
         fgets(msgstring,1000,stdin);
-        printf("Your string is: %s", msgstring);
+        printf("Your string is: %s\n", msgstring);
         msglength = strlen(msgstring);
-        printf("String length = %d", msglength);
+        printf("String length = %d\n", msglength);
         
 
         //String Processing/Flashing
         transLength = 0;
         string_to_morse(msgstring, msglength);
-        printf("proceeding to flashString");
         createFlashString();
-        printf("flashing LED");
         flashLED(3);
-        puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
+        puts("Finished LED blink GP_LED - gpio-3 on Galileo board.\n");
 
         return 0;
 }
