@@ -344,9 +344,8 @@ int main(void)
         int msglength;
         printf("Enter a string: ");
         fgets(msgstring,1000,stdin);
-        printf("Your string is: %s\n", msgstring);
+        printf("String entered: %s\n", msgstring);
         msglength = strlen(msgstring);
-        printf("String length = %d\n", msglength);
         
 
         //String Processing/Flashing
@@ -354,7 +353,7 @@ int main(void)
         string_to_morse(msgstring, msglength);
         createFlashString();
         flashLED(3);
-        puts("Finished LED blink GP_LED - gpio-3 on Galileo board.\n");
+        puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
 
         return 0;
 }
