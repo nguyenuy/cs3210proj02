@@ -347,13 +347,14 @@ int main(void)
         printf("Enter a string: ");
         fgets(msgstring,1000,stdin);
         printf("Your string is: %s", msgstring);
-        msglength = strlen(msgstring);
-        printf("String length = %d", msglength);
+//        msglength = strlen(msgstring);
+  //      printf("String length = %d", msglength);
         
 
         //String Processing/Flashing
         transLength = 0;
-        string_to_morse(msgstring, msglength);
+        string_to_morse(msgstring, 1000);
+        printf("proceeding to flashString");
         createFlashString();
         flashLED(3);
         puts("Finished LED blink GP_LED - gpio-3 on Galileo board.");
