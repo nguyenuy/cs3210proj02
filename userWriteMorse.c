@@ -327,8 +327,11 @@ void flashLED(int gpio) {
                 
                 if(current == 'f') {
                         flash(gpio, next);
+                        printf("Flashing for %d seconds.\n", next);
                 } else if(current == 'w') {
+                        printf("Sleeping for %d seconds.\n", next);
                         sleep(next);
+                        
                 }
         }
 }
