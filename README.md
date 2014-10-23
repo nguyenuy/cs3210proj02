@@ -3,6 +3,12 @@ Project Log
 
 
 ###Project 2 Progress Log
+10/23 - [Uy] get performance parameters of user space code
+
+10/21 - Mid-Project Review 
+
+10/20 - [Ses] finish/debug userWriteMorse.c and userReadMorse.c
+
 10/19 - [Ses, Uy] finish implementation of userWriteMorse.c. Need to test on board and add minor modifications to timing.
 
 10/17 - Got push button logic to work [all].[Chen] completed implementation of userReadMorse.c
