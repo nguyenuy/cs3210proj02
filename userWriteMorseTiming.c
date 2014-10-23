@@ -330,9 +330,9 @@ void flashLED(int gpio) {
                 char next = *(flashStr+i+1);
                 
                 if(current == 'f') {
-                        //flash(gpio, next);
+                        flash(gpio, next);
                 } else if(current == 'w') {
-                        //sleep(next);
+                        sleep(next);
                         
                 }
         }
