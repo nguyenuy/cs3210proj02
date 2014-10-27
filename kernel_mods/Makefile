@@ -1,5 +1,14 @@
-obj-m += reverse.o
-all:
-    make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+ifneq ($(KERNELRELEASE),)
+    obj-m += device.o
+else
+
+KERNELDIR ?= /lib/modules/$(shell uname -r)/build
+#KERNELDIR ?= /home/nitin/Desktop/src/linux-3.11.1/
+
+PWD := $(shell pwd)
+
+default:
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
+endif
 clean:
-    make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
