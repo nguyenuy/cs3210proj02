@@ -64,14 +64,13 @@ int init_module(void)
 /*
  * This function is called when the module is unloaded
  */
-void cleanup_module(void)
+void cleanup_module()
 {
 	/* 
 	 * Unregister the device 
 	 */
 	int ret = unregister_chrdev(Major, DEVICE_NAME);
-	if (ret < 0)
-		printk(KERN_ALERT "Error in unregister_chrdev: %d\n", ret);
+	if (ret < 0) { printk(KERN_ALERT "Error in unregister_chrdev: %d\n", ret); }
 }
 
 /*
