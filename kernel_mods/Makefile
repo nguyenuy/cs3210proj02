@@ -2,7 +2,7 @@ ifneq ($(KERNELRELEASE),)
     obj-m += device.o
 else
 
-KERNELDIR ?= /lib/modules/$(shell uname -r)/build
+KERNELDIR ?= /usr/src/linux-headers-3.8.7/
 #KERNELDIR ?= /home/nitin/Desktop/src/linux-3.11.1/
 
 PWD := $(shell pwd)
