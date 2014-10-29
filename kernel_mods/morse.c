@@ -32,13 +32,6 @@ static int Device_Open = 0;	/* Is device open?
 static char msg[BUF_LEN];	/* The msg the device will give when asked */
 static char *msg_Ptr;
 
-static struct file_operations fops = {
-	.read = device_read,
-	.write = device_write,
-	.open = device_open,
-	.release = device_release
-};
-
 /*  
  *  Function Prototypes - this would normally go in a .h file
  */
@@ -46,6 +39,14 @@ static int device_open(struct inode *, struct file *);
 static int device_release(struct inode *, struct file *);
 static ssize_t device_read(struct file *, char *, size_t, loff_t *);
 static ssize_t device_write(struct file *, const char *, size_t, loff_t *);
+
+static struct file_operations fops = {
+	.read = device_read,
+	.write = device_write,
+	.open = device_open,
+	.release = device_release
+};
+
 
 /*
  * Module init function
