@@ -8,6 +8,7 @@
 #include <linux/fs.h>
 #include <asm/uaccess.h>	/* for put_user */
 #include <linux/gpio.h>
+#include <linux/delay.h>
 
 /*
  *  GPIO Definitions 
@@ -70,6 +71,12 @@ int init_module(void)
 	printk(KERN_INFO "Try various minor numbers. Try to cat and echo to\n");
 	printk(KERN_INFO "the device file.\n");
 	printk(KERN_INFO "Remove the device file and module when done.\n");
+
+	int gpio_led = gpio_request(GP_LED);
+	gpio_direction_output(gpio_led, 1);
+	ssleep(5);
+	gpio_direction_output(gpio_led, 0);
+	gpio_free(gpio_led);
 
 	return SUCCESS;
 }
