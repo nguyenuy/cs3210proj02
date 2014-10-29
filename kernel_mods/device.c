@@ -22,6 +22,12 @@
 #define GPIO_DIRECTION_OUT     (0)
 #define ERROR                  (-1)
 
+//Define GPIOs for LEDs
+static struct gpio leds[] = {
+	{  GP_LED, GPIOF_OUT_INIT_LOW, "LED" },
+};
+
+
 /*  
  *  Prototypes - this would normally go in a .h file
  */
@@ -58,7 +64,7 @@ static struct file_operations fops = {
  */
 int init_module(void)
 {
-        Major = register_chrdev(0, DEVICE_NAME, &fops);
+    Major = register_chrdev(0, DEVICE_NAME, &fops);
 
 	if (Major < 0) {
 	  printk(KERN_ALERT "Registering char device failed with %d\n", Major);
@@ -71,6 +77,14 @@ int init_module(void)
 	printk(KERN_INFO "Try various minor numbers. Try to cat and echo to\n");
 	printk(KERN_INFO "the device file.\n");
 	printk(KERN_INFO "Remove the device file and module when done.\n");
+
+	int ret = 0;
+	ret = gpio_request_array(leds, ARRAY_SIZE(leds));
+	if (ret) {
+		printk(KERN_ERR "Unable to request GPIOs for LEDs: %d\n", ret);
+		return ret;
+	}
+	gpio_free_array(leds, ARRAY_SIZE(leds));
 
 	return SUCCESS;
 }
