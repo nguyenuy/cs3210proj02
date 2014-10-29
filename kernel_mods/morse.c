@@ -70,13 +70,13 @@ static int __init morse_init(void)
 
 	//register the GPIOs
 	int ret = 0;
-	ret = gpio_request_array(leds, ARRAY_SIZE(leds));
+	ret = gpio_request_array(morse_gpio, ARRAY_SIZE(morse_gpio));
 
 	if (ret) {
 		printk(KERN_ERR "Unable to request GPIOs: %d\n", ret);
 	}
 
-	gpio_set_value(leds[0].gpio, 1);
+	gpio_set_value(morse_gpio[0].gpio, 1);
 
 	return ret;
 }
@@ -93,12 +93,12 @@ static void __exit morse_exit(void)
 
 	//Unregister all GPIOs
 	int i;
-	for(i = 0; i < ARRAY_SIZE(leds); i++) {
-		gpio_set_value(leds[i].gpio, 0); 
+	for(i = 0; i < ARRAY_SIZE(morse_gpio); i++) {
+		gpio_set_value(morse_gpio[i].gpio, 0); 
 	}
 	
 	// unregister all GPIOs
-	gpio_free_array(leds, ARRAY_SIZE(leds));
+	gpio_free_array(morse_gpio, ARRAY_SIZE(morse_gpio));
 }
 
 /* 
