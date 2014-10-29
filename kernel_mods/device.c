@@ -86,7 +86,7 @@ int init_module(void)
 	  printk(KERN_INFO "The requested GPIO is not available \n");	
 	}
 	if(gpio_request(led_gpio, "blinking_led")){
-	  printk(KERN_ALERT "Unable to request gpio %d", blink_gpio);
+	  printk(KERN_ALERT "Unable to request gpio %d", led_gpio);
 	  return SUCCESS;
 	}
 
