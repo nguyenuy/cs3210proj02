@@ -92,6 +92,9 @@ static int __init morse_init(void)
       printk(KERN_ERR "Unable to request GPIOs: %d\n", ret);
    }
 
+   //Initialize morse arrays
+   initialize_char_to_bin_array();
+
    //TO DELETE: TURN LED ON
    gpio_set_value(morse_gpio[0].gpio, 1);
 
