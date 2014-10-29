@@ -7,6 +7,19 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <asm/uaccess.h>	/* for put_user */
+#include <linux/gpio.h>
+
+/*
+ *  GPIO Definitions 
+ */
+#define GP_LED                 (3) // GPIO3 is GP LED - LED connected between Cypress CY8C9540A and RTC battery header
+#define GP_5                   (17) //GPIO17 corresponds to Arduino PIN5
+#define GP_6                   (24) //GPIO24 corresponds to Arduino PIN6
+#define GP_7                   (27) //GPIO27 corresponds to Arduino PIN7
+#define BLINK_TIME_SEC         (1) // 1 seconds blink time
+#define GPIO_DIRECTION_IN      (1)
+#define GPIO_DIRECTION_OUT     (0)
+#define ERROR                  (-1)
 
 /*  
  *  Prototypes - this would normally go in a .h file
