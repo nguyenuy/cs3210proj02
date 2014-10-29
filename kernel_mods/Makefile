@@ -1,5 +1,6 @@
 ifneq ($(KERNELRELEASE),)
     obj-m += device.o
+    obj-m += gpiomod.o
 else
 
 KERNELDIR ?= /usr/src/linux-headers-3.8.7/

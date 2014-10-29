@@ -7,7 +7,7 @@
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <asm/uaccess.h>	/* for put_user */
-#include <asm/gpio.h>
+#include <linux/gpio.h>
 
 /*
  *  GPIO Definitions 
