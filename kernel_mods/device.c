@@ -81,6 +81,13 @@ int init_module(void)
 	int led_gpio=3;
 	if (!gpio_is_valid(led_gpio)){
 	  printk(KERN_INFO "The requested GPIO is not available \n");
+	  return SUCCESS;
+	} else {
+	  printk(KERN_INFO "The requested GPIO is not available \n");	
+	}
+	if(gpio_request(led_gpio, "blinking_led")){
+	  printk(KERN_ALERT "Unable to request gpio %d", blink_gpio);
+	  return SUCCESS;
 	}
 
 	return SUCCESS;
