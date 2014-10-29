@@ -6,7 +6,7 @@
  * Struct defining pins, direction and inital state 
  */
 static struct gpio leds[] = {
-		{  3, GPIOF_OUT_INIT_HIGH, "LED 1" },,
+		{  3, GPIOF_OUT_INIT_HIGH, "LED 1" },
 };
 
 /*
