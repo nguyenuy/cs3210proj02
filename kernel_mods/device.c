@@ -78,13 +78,10 @@ int init_module(void)
 	printk(KERN_INFO "the device file.\n");
 	printk(KERN_INFO "Remove the device file and module when done.\n");
 
-	int ret = 0;
-	ret = gpio_request_array(leds, ARRAY_SIZE(leds));
-	if (ret) {
-		printk(KERN_ERR "Unable to request GPIOs for LEDs: %d\n", ret);
-		return ret;
+	int led_gpio=3;
+	if (!gpio_is_valid(led_gpio)){
+	  printk(KERN_INFO "The requested GPIO is not available \n");
 	}
-	gpio_free_array(leds, ARRAY_SIZE(leds));
 
 	return SUCCESS;
 }
