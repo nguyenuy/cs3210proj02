@@ -18,17 +18,9 @@
 /*
  * Struct defining pins, direction and inital state 
  */
-static struct gpio leds[] = {
+static struct gpio morse_gpio[] = {
 		{  GP_LED, GPIOF_OUT_INIT_HIGH, "LED" },
 };
-
-/*  
- *  Prototypes - this would normally go in a .h file
- */
-static int device_open(struct inode *, struct file *);
-static int device_release(struct inode *, struct file *);
-static ssize_t device_read(struct file *, char *, size_t, loff_t *);
-static ssize_t device_write(struct file *, const char *, size_t, loff_t *);
 
 /* 
  * Global variables are declared as static, so are global within the file. 
@@ -46,13 +38,24 @@ static struct file_operations fops = {
 	.open = device_open,
 	.release = device_release
 };
+
+/*  
+ *  Function Prototypes - this would normally go in a .h file
+ */
+static int device_open(struct inode *, struct file *);
+static int device_release(struct inode *, struct file *);
+static ssize_t device_read(struct file *, char *, size_t, loff_t *);
+static ssize_t device_write(struct file *, const char *, size_t, loff_t *);
+
 /*
  * Module init function
  */
 static int __init morse_init(void)
 {
-	Major = register_chrdev(0, DEVICE_NAME, &fops);
+	printk(KERN_INFO "%s\n", __func__);
 
+	//Init the file
+	Major = register_chrdev(0, DEVICE_NAME, &fops);
 	if (Major < 0) {
 	  printk(KERN_ALERT "Registering char device failed with %d\n", Major);
 	  return Major;
@@ -64,17 +67,14 @@ static int __init morse_init(void)
 	printk(KERN_INFO "the device file.\n");
 	printk(KERN_INFO "Remove the device file and module when done.\n");
 
-	
+	//register the GPIOs
 	int ret = 0;
-
-	printk(KERN_INFO "%s\n", __func__);
-
-	// register LED GPIOs, turn LEDs on
 	ret = gpio_request_array(leds, ARRAY_SIZE(leds));
 
 	if (ret) {
 		printk(KERN_ERR "Unable to request GPIOs: %d\n", ret);
 	}
+
 	gpio_set_value(leds[0].gpio, 1);
 
 	return ret;
@@ -85,13 +85,13 @@ static int __init morse_init(void)
  */
 static void __exit morse_exit(void)
 {
-	unregister_chrdev(Major, DEVICE_NAME);
-
-	int i;
-
 	printk(KERN_INFO "%s\n", __func__);
 
-	// turn all LEDs off
+	//Unregister device module in fs
+	unregister_chrdev(Major, DEVICE_NAME);
+
+	//Unregister all GPIOs
+	int i;
 	for(i = 0; i < ARRAY_SIZE(leds); i++) {
 		gpio_set_value(leds[i].gpio, 0); 
 	}
