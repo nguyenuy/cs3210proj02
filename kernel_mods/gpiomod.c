@@ -24,6 +24,7 @@ static int __init gpiomod_init(void)
 	if (ret) {
 		printk(KERN_ERR "Unable to request GPIOs: %d\n", ret);
 	}
+	gpio_set_value(leds[0].gpio, 1);
 
 	return ret;
 }
