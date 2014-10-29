@@ -1,6 +1,8 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/gpio.h>
+#include <linux/fs.h>
+#include <asm/uaccess.h>
 
 /*
  * Struct defining pins, direction and inital state 
