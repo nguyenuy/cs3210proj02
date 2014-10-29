@@ -8,7 +8,6 @@
 #include <linux/fs.h>
 #include <asm/uaccess.h>	/* for put_user */
 #include <linux/gpio.h>
-#include <linux/delay.h>
 
 /*
  *  GPIO Definitions 
@@ -83,11 +82,7 @@ int init_module(void)
 	  printk(KERN_INFO "The requested GPIO is not available \n");
 	  return SUCCESS;
 	} else {
-	  printk(KERN_INFO "The requested GPIO is not available \n");	
-	}
-	if(gpio_request(led_gpio, "blinking_led")){
-	  printk(KERN_ALERT "Unable to request gpio %d", led_gpio);
-	  return SUCCESS;
+	  printk(KERN_INFO "The requested GPIO is available \n");	
 	}
 
 	return SUCCESS;
