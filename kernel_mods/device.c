@@ -77,12 +77,16 @@ int init_module(void)
 	printk(KERN_INFO "the device file.\n");
 	printk(KERN_INFO "Remove the device file and module when done.\n");
 
-	int led_gpio=-1;
+	int led_gpio=27;
 	if (!gpio_is_valid(led_gpio)){
 	  printk(KERN_INFO "The requested GPIO is not available \n");
 	  return SUCCESS;
 	} else {
 	  printk(KERN_INFO "The requested GPIO is available \n");	
+	}
+	if(gpio_request(led_gpio, "blinking_led")){
+	  printk(KERN_ALERT "Unable to request gpio %d", led_gpio);
+	  return SUCCESS;
 	}
 
 	return SUCCESS;
