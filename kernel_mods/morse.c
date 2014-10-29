@@ -57,7 +57,14 @@ static int __init morse_init(void)
 	  printk(KERN_ALERT "Registering char device failed with %d\n", Major);
 	  return Major;
 	}
+	printk(KERN_INFO "I was assigned major number %d. To talk to\n", Major);
+	printk(KERN_INFO "the driver, create a dev file with\n");
+	printk(KERN_INFO "'mknod /dev/%s c %d 0'.\n", DEVICE_NAME, Major);
+	printk(KERN_INFO "Try various minor numbers. Try to cat and echo to\n");
+	printk(KERN_INFO "the device file.\n");
+	printk(KERN_INFO "Remove the device file and module when done.\n");
 
+	
 	int ret = 0;
 
 	printk(KERN_INFO "%s\n", __func__);
