@@ -72,13 +72,6 @@ int init_module(void)
 	printk(KERN_INFO "the device file.\n");
 	printk(KERN_INFO "Remove the device file and module when done.\n");
 
-	char gpio_string[] = "gpioLED";
-	int gpio_led = gpio_request(GP_LED, gpio_string);
-	gpio_direction_output(gpio_led, 1);
-	ssleep(5);
-	gpio_direction_output(gpio_led, 0);
-	gpio_free(gpio_led);
-
 	return SUCCESS;
 }
 
