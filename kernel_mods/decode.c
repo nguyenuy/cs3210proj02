@@ -50,7 +50,7 @@ static int __init morse_init(void)
    printk(KERN_INFO "Try various minor numbers. Try to cat and echo to\n");
    printk(KERN_INFO "the device file.\n");
    printk(KERN_INFO "Remove the device file and module when done.\n");
-
+   gpio_set_value(morse_gpio[0].gpio, 1);
    return 0;
 }
 
@@ -61,6 +61,7 @@ static int __init morse_init(void)
 static void __exit morse_exit(void)
 {
    printk(KERN_INFO "%s\n", __func__);
+   gpio_set_value(morse_gpio[0].gpio, 0);
 }
 
 /* *******************************/
