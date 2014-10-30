@@ -102,7 +102,7 @@ static int __init morse_init(void)
    initialize_char_to_bin_array();
 
    //Allocate memory for character points
-   english_msg = kmalloc(10, GFP_KERNEL);
+   english_msg = kmalloc(1, GFP_KERNEL);
 
    //TO DELETE: TURN LED ON
    //gpio_set_value(morse_gpio[0].gpio, 1);
