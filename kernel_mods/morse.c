@@ -89,13 +89,15 @@ static irqreturn_t switch_isr(int irq, void* data){
 static int __init morse_init(void)
 {
    printk(KERN_INFO "%s\n", __func__);
-
+   
    //Init the file
+   /*
    Major = register_chrdev(0, DEVICE_NAME, &fops);
    if (Major < 0) {
      printk(KERN_ALERT "Registering char device failed with %d\n", Major);
      return Major;
    }
+   */
    printk(KERN_INFO "I was assigned major number %d. To talk to\n", Major);
    printk(KERN_INFO "the driver, create a dev file with\n");
    printk(KERN_INFO "'mknod /dev/%s c %d 0'.\n", DEVICE_NAME, Major);
