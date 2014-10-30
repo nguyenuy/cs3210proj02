@@ -106,14 +106,14 @@ static int __init morse_init(void)
    }
    printk(KERN_INFO "Current switch set to %d\n", gpio_get_value(switch_gpio[0].gpio));
    
-   ret = pio_to_irq(switch_gpio[0].gpio);
+   ret = gpio_to_irq(switch_gpio[0].gpio);
    if(ret < 0){
      printk(KERN_ERR "Unable to request IRQ on switch: %d\n", ret);
      return -1;
    }
 
    switch_irqs[0] = ret;
-   printk(KERN_INFO "SWITCH IRQ is as %d\n", switch_irq[0]);
+   printk(KERN_INFO "SWITCH IRQ is as %d\n", switch_irqs[0]);
 
    ret = request_irq(switch_irqs[0], switch_isr, IRQF_TRIGGER_RISING, "gpio switch", NULL);
    if(ret){
