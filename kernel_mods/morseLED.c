@@ -101,7 +101,7 @@ static int __init morse_init(void)
    initialize_char_to_bin_array();
 
    //Allocate memory for character points
-   english_msg = vmalloc(PAGE_SIZE*4);
+   english_msg = kmalloc(10, GFP_KERNEL);
 
    //TO DELETE: TURN LED ON
    //gpio_set_value(morse_gpio[0].gpio, 1);
@@ -126,6 +126,7 @@ static void __exit morse_exit(void)
    
    // unregister all GPIOs
    gpio_free_array(morse_gpio, ARRAY_SIZE(morse_gpio));
+   kfree(english_msg);
 }
 
 /* 
@@ -215,13 +216,15 @@ device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
 {
   //printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
   //return -EINVAL;
-  //size_t copy_size = len*sizeof(char)*27;
+  size_t copy_size = len*sizeof(char)*9;
   copy_from_user(english_msg, buff, copy_size);
   //printk(KERN_INFO "Hi");
   //string_to_morse(english_msg, copy_size);
   printk(KERN_INFO "Translated Message: %s\n", english_msg);
-  printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
-  return -EINVAL;
+
+  //printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
+  //return -EINVAL;
+  return 1;
 }
 
 /*******************************
