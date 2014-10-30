@@ -113,6 +113,7 @@ static int __init morse_init(void)
       printk(KERN_ERR "Unable to request LED GPIOs: %d\n", ret);
    }
    gpio_set_value(morse_gpio[0].gpio, 1);
+   /*
    // register the switch gpio
    ret = gpio_request_array(switch_gpio,ARRAY_SIZE(switch_gpio));
    if(ret){
@@ -140,7 +141,7 @@ static int __init morse_init(void)
 
    //TO DELETE: TURN LED ON
 
-
+   */
    return ret;
 }
 
