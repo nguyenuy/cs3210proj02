@@ -1,3 +1,4 @@
+#include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/gpio.h>
@@ -70,6 +71,18 @@ static struct file_operations fops = {
 };
 
 
+// the switch interrupt routine
+static irqreturn_t switch_isr(int irq, void* data){
+  if(irq == switch_irqs[0]){
+    if(gpio_get_value(morse_gpio[0].gpio))
+      gpio_set_value(morse_gpio[0].gpio, 0);
+    else
+      gpio_set_value(morse_gpio[0].gpio, 1);
+  }
+  return IRQ_HANDLED;
+}
+
+
 /*
  * Module init function
  */
@@ -129,16 +142,6 @@ static int __init morse_init(void)
    return ret;
 }
 
-// the switch interrupt routine
-static irqreturn_t switch_isr(int irq, void* data){
-  if(irq == switch_irqs[0]){
-    if(gpio_get_value(morse_gpio[0].gpio))
-      gpio_set_value(morse_gpio[0].gpio, 0);
-    else
-      gpio_set_value(morse_gpio[0].gpio, 1);
-  }
-  return IRQ_HANDLED;
-}
 
 /*
  * Module exit function
