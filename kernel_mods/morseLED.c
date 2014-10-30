@@ -17,7 +17,7 @@
 
 #define SUCCESS 0
 #define DEVICE_NAME "morseEncode"   /* Dev name as it appears in /proc/devices   */
-#define BUF_LEN 80      /* Max length of the message from the device */
+#define BUF_LEN 120      /* Max length of the message from the device */
 
 #define CHAR_SIZE 256
 #define MORSE_BIN 16
@@ -102,7 +102,7 @@ static int __init morse_init(void)
    initialize_char_to_bin_array();
 
    //Allocate memory for character points
-   english_msg = kmalloc(1, GFP_KERNEL);
+   english_msg = kmalloc(BUF_LEN, GFP_KERNEL);
 
    //TO DELETE: TURN LED ON
    //gpio_set_value(morse_gpio[0].gpio, 1);
@@ -218,9 +218,11 @@ device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
   //printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
   //return -EINVAL;
   //size_t copy_size = len*sizeof(char)*9;
-  char *tmp;
-  tmp = buff + len - 1;
-  copy_from_user(english_msg, buff, 1);
+  int i = 0;
+  for (; i<BUF_LEN ;i++) {
+    *(english_msg+i) = '\0';
+  }
+  copy_from_user(english_msg, buff, len);
   //printk(KERN_INFO "Hi");
   //string_to_morse(english_msg, copy_size);
   printk(KERN_INFO "Translated Message: %s\n", english_msg);
