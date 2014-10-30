@@ -216,10 +216,10 @@ device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
   //printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
   //return -EINVAL;
   //size_t copy_size = len*sizeof(char)*27;
-  //copy_from_user(english_msg, buff, copy_size);
+  copy_from_user(english_msg, buff, copy_size);
   //printk(KERN_INFO "Hi");
   //string_to_morse(english_msg, copy_size);
-  //printk(KERN_INFO "Translated Message: %s\n", english_msg);
+  printk(KERN_INFO "Translated Message: %s\n", english_msg);
   printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
   return -EINVAL;
 }
