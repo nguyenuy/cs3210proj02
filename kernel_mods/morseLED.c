@@ -174,6 +174,7 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
             size_t length, /* length of the buffer     */
             loff_t * offset)
 {
+   copy_to_user(buffer, english_msg, 2);
    /*
     * Number of bytes actually written to the buffer 
     */
@@ -220,7 +221,7 @@ device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
   //size_t copy_size = len*sizeof(char)*9;
   int i = 0;
   for (; i<BUF_LEN ;i++) {
-    //*(english_msg+i) = '\0';
+    *(english_msg+i) = '\0';
   }
   copy_from_user(english_msg, buff, len);
   //printk(KERN_INFO "Hi");
