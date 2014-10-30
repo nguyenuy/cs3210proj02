@@ -35,6 +35,7 @@ static struct gpio morse_gpio[] = {
 typedef __u16 morse_t;
 int len,temp;
 morse_t charToBin[CHAR_SIZE];
+char *morse_msg;
 
 /* 
  * Global variables are declared as static, so are global within the file. 
@@ -94,7 +95,6 @@ static int __init morse_init(void)
       printk(KERN_ERR "Unable to request GPIOs: %d\n", ret);
    }
 
-   flashLED(3);
    //Initialize morse arrays
    initialize_char_to_bin_array();
 
@@ -208,8 +208,46 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
 static ssize_t
 device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
 {
-   printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
-   return -EINVAL;
+  //printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
+  //return -EINVAL;
+  size_t copy_size = len*sizeof(char)*27;
+  copy_from_user(morse_msg,buff,copy_size);
+  char* translated = vmalloc(copy_size);
+  char* p = translated;
+  int i = 0;
+  for(; i<count;i++){
+    char ch = *(morse_msg+i);
+    if(ch == ' ') {
+      *(p++) = 'S';
+      continue;
+    }
+
+    int shift = MORSE_BIN-1;
+    morse_t bin = charToBin[ch];
+    for (; shift>=0; shift--) {
+      morse_t mask = 1<<shift;
+      if((mask & bin) != 0) {
+        break;
+      }
+    }
+    shift--;
+    for (; shift>0; shift--) {
+      morse_t mask = 1 << shift;
+      if((mask & bin) !=0 ) {
+        *(p++) = 'i';
+        //transLength++;
+      } else {
+        *(p++) = 'a';
+        //transLength++;
+      }
+      *(p++) = (shift==0?' ':'-');
+      //transLength++
+    }
+  }
+  *(p) = '\0';
+  memcpy(morse_msg, translated, copy_size);
+  vfree(morse_msg);
+  return 0;
 }
 
 /*******************************
