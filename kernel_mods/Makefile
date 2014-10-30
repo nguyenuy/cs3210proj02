@@ -1,7 +1,7 @@
 ifneq ($(KERNELRELEASE),)
     obj-m += morse.o
     obj-m += gpiomod.o
-    obj-m += morseLED.c
+    obj-m += morseLED.o
 else
 
 KERNELDIR ?= /usr/src/linux-headers-3.8.7/
