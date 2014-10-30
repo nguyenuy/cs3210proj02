@@ -28,6 +28,12 @@ static struct gpio morse_gpio[] = {
       {  GP_LED, GPIOF_OUT_INIT_HIGH, "LED" },
 };
 
+static struct gpio switch_gpio[] = {
+  { GP_7, GPIOF_IN, "SWITCH"},
+};
+
+// for the IRQ # of the button
+static int[] switch_irqs[] = {-1};
 /*
  * GLobal variables undeclared as static
 */
@@ -84,21 +90,54 @@ static int __init morse_init(void)
    printk(KERN_INFO "the device file.\n");
    printk(KERN_INFO "Remove the device file and module when done.\n");
 
-   //register the GPIOs
+   //register the LED gpio
    int ret = 0;
    ret = gpio_request_array(morse_gpio, ARRAY_SIZE(morse_gpio));
 
    if (ret) {
-      printk(KERN_ERR "Unable to request GPIOs: %d\n", ret);
+      printk(KERN_ERR "Unable to request LED GPIOs: %d\n", ret);
+   }
+   gpio_set_value(morse_gpio[0].gpio, 1);
+   // register the switch gpio
+   ret = gpio_request_array(switch_gpio,ARRAY_SIZE(switch_gpio));
+   if(ret){
+     printk(KERN_ERR "Cannot request GPIOs for switch: %d\n", ret);
+     return -1;
+   }
+   printk(KERN_INFO "Current switch set to %d\n", gpio_get_value(switch_gpio[0].gpio));
+   
+   ret = pio_to_irq(switch_gpio[0].gpio);
+   if(ret < 0){
+     printk(KERN_ERR "Unable to request IRQ on switch: %d\n", ret);
+     return -1;
    }
 
+   switch_irqs[0] = ret;
+   printk(KERN_INFO "SWITCH IRQ is as %d\n", switch_irq[0]);
+
+   ret = request_irq(switch_irqs[0], switch_isr, IRQF_TRIGGER_RISING, "gpio switch", NULL);
+   if(ret){
+     printk(KERN_ERR "Unable to request IRQ on switch : %d\n", ret);
+   }
+   
    //Initialize morse arrays
    initialize_char_to_bin_array();
 
    //TO DELETE: TURN LED ON
-   gpio_set_value(morse_gpio[0].gpio, 1);
+
 
    return ret;
+}
+
+// the switch interrupt routine
+static irqreturn_t switch_isr(int irq, void* data){
+  if(irq == switch_irqs[0]){
+    if(gpio_get_value(morse_gpio[0].gpio))
+      gpio_set_value(morse_gpio[0].gpio, 0);
+    else
+      gpio_set_value(morse_gpio[0].gpio, 1);
+  }
+  return IRQ_HANDLED;
 }
 
 /*
