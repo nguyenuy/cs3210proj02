@@ -119,14 +119,14 @@ static int __init morse_init(void)
    ret = gpio_request_array(switch_gpio,ARRAY_SIZE(switch_gpio));
    if(ret){
      printk(KERN_ERR "Cannot request GPIOs for switch: %d\n", ret);
-     return -1;
+     goto fail2;
    }
    printk(KERN_INFO "Current switch set to %d\n", gpio_get_value(switch_gpio[0].gpio));
    
    ret = gpio_to_irq(switch_gpio[0].gpio);
    if(ret < 0){
      printk(KERN_ERR "Unable to request IRQ on switch: %d\n", ret);
-     return -1;
+     goto fail3;
    }
 
    switch_irqs[0] = ret;
@@ -171,6 +171,7 @@ static void __exit morse_exit(void)
    
    // unregister all GPIOs
    gpio_free_array(morse_gpio, ARRAY_SIZE(morse_gpio));
+   gpio_free_array(switch_gpio,ARRAY_SIZE(switch_gpio));
 }
 
 /* 
