@@ -3,6 +3,7 @@ ifneq ($(KERNELRELEASE),)
     obj-m += gpiomod.o
     obj-m += threads.o
     obj-m += morseLED.o
+    obj-m += device.o
 else
 
 KERNELDIR ?= /usr/src/linux-headers-3.8.7/
