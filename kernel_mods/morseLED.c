@@ -5,6 +5,7 @@
 #include <linux/delay.h>
 #include <asm/uaccess.h>
 #include <linux/vmalloc.h>
+#include <linux/slab.h>
 
 /*
  *  GPIO Definitions 
