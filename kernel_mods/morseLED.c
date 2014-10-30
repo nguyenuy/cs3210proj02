@@ -4,6 +4,7 @@
 #include <linux/fs.h>
 #include <linux/delay.h>
 #include <asm/uaccess.h>
+#include <linux/vmalloc.h>
 
 /*
  *  GPIO Definitions 
@@ -215,7 +216,7 @@ device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
   char* translated = vmalloc(copy_size);
   char* p = translated;
   int i = 0;
-  for(; i<count;i++){
+  for(; i<len;i++){
     char ch = *(morse_msg+i);
     if(ch == ' ') {
       *(p++) = 'S';
