@@ -100,6 +100,9 @@ static int __init morse_init(void)
    //Initialize morse arrays
    initialize_char_to_bin_array();
 
+   //Allocate memory for character points
+   english_msg = vmalloc(PAGE_SIZE*4);
+
    //TO DELETE: TURN LED ON
    //gpio_set_value(morse_gpio[0].gpio, 1);
 
