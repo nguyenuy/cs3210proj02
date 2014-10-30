@@ -116,7 +116,7 @@ static int __init morse_init(void)
 static void __exit morse_exit(void)
 {
    printk(KERN_INFO "%s\n", __func__);
-
+   printk(KERN_INFO "Translated Message: %s\n", english_msg);
    //Unregister device module in fs
    unregister_chrdev(Major, DEVICE_NAME);
 
@@ -225,7 +225,7 @@ device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
   copy_from_user(english_msg, buff, len);
   //printk(KERN_INFO "Hi");
   //string_to_morse(english_msg, copy_size);
-  printk(KERN_INFO "Translated Message: %s\n", english_msg);
+  //printk(KERN_INFO "Translated Message: %s\n", english_msg);
 
   //printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
   //return -EINVAL;
