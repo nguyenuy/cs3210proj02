@@ -33,7 +33,7 @@ static struct gpio switch_gpio[] = {
 };
 
 // for the IRQ # of the button
-static int[] switch_irqs[] = {-1};
+static int switch_irqs[] = {-1};
 /*
  * GLobal variables undeclared as static
 */
