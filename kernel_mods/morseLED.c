@@ -38,7 +38,7 @@ typedef __u16 morse_t;
 int len,temp;
 morse_t charToBin[CHAR_SIZE];
 char *morse_msg;
-char *english_msg;
+static char *english_msg;
 
 /* 
  * Global variables are declared as static, so are global within the file. 
