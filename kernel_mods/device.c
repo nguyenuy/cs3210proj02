@@ -21,11 +21,6 @@
 #define GPIO_DIRECTION_OUT     (0)
 #define ERROR                  (-1)
 
-//Define GPIOs for LEDs
-static struct gpio leds[] = {
-	{  GP_LED, GPIOF_OUT_INIT_LOW, "LED" },
-};
-
 
 /*  
  *  Prototypes - this would normally go in a .h file
@@ -78,15 +73,6 @@ int init_module(void)
 	printk(KERN_INFO "Try various minor numbers. Try to cat and echo to\n");
 	printk(KERN_INFO "the device file.\n");
 	printk(KERN_INFO "Remove the device file and module when done.\n");
-
-	int led_gpio=3;
-	if (!gpio_is_valid(led_gpio)){
-	  printk(KERN_INFO "The requested GPIO is not available \n");
-	  return SUCCESS;
-	} else {
-	  printk(KERN_INFO "The requested GPIO is available \n");	
-	}
-	gpio_set_value(led_gpio, 1);
 
 	return SUCCESS;
 }
