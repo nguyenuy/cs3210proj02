@@ -37,6 +37,7 @@ typedef __u16 morse_t;
 int len,temp;
 morse_t charToBin[CHAR_SIZE];
 char *morse_msg;
+char *english_msg;
 
 /* 
  * Global variables are declared as static, so are global within the file. 
@@ -212,42 +213,13 @@ device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
   //printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
   //return -EINVAL;
   size_t copy_size = len*sizeof(char)*27;
-  copy_from_user(morse_msg,buff,copy_size);
-  char* translated = vmalloc(copy_size);
-  char* p = translated;
-  int i = 0;
-  for(; i<len;i++){
-    char ch = *(morse_msg+i);
-    if(ch == ' ') {
-      *(p++) = 'S';
-      continue;
-    }
+  copy_from_user(english_msg, buff,copy_size);
+  printk(KERN_INFO "English Message: %s\n", english_msg);
+  string_to_morse(english_msg, copy_size);
+  printk(KERN_INFO "Translated Message: %s\n", english_msg);
 
-    int shift = MORSE_BIN-1;
-    morse_t bin = charToBin[ch];
-    for (; shift>=0; shift--) {
-      morse_t mask = 1<<shift;
-      if((mask & bin) != 0) {
-        break;
-      }
-    }
-    shift--;
-    for (; shift>0; shift--) {
-      morse_t mask = 1 << shift;
-      if((mask & bin) !=0 ) {
-        *(p++) = 'i';
-        //transLength++;
-      } else {
-        *(p++) = 'a';
-        //transLength++;
-      }
-      *(p++) = (shift==0?' ':'-');
-      //transLength++
-    }
-  }
-  *(p) = '\0';
-  memcpy(morse_msg, translated, copy_size);
-  vfree(morse_msg);
+
+  
   return 0;
 }
 
@@ -320,6 +292,44 @@ int i=0;
   }   
 }
 
+int string_to_morse(char *buf, int length) {
+  char* translated = vmalloc(length);
+  char* p = translated;
+  int i = 0;
+  for(; i<len;i++){
+    char ch = *(buf+i);
+    if(ch == ' ') {
+      *(p++) = 'S';
+      continue;
+    }
+
+    int shift = MORSE_BIN-1;
+    morse_t bin = charToBin[ch];
+    for (; shift>=0; shift--) {
+      morse_t mask = 1<<shift;
+      if((mask & bin) != 0) {
+        break;
+      }
+    }
+    shift--;
+    for (; shift>0; shift--) {
+      morse_t mask = 1 << shift;
+      if((mask & bin) !=0 ) {
+        *(p++) = 'i';
+        //transLength++;
+      } else {
+        *(p++) = 'a';
+        //transLength++;
+      }
+      *(p++) = (shift==0?' ':'-');
+      //transLength++
+    }
+  }
+  *(p) = '\0';
+  memcpy(english_msg, translated, length);
+  vfree(translated);
+  return 0;
+}
 void flashLED(int seconds) {
   gpio_set_value(morse_gpio[0].gpio, 1);
   ssleep(seconds);
