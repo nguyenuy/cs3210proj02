@@ -162,12 +162,12 @@ static void __exit morse_exit(void)
    printk(KERN_INFO "%s\n", __func__);
 
    //Unregister device module in fs
-   unregister_chrdev(Major, DEVICE_NAME);
+   //unregister_chrdev(Major, DEVICE_NAME);
 
    //Unregister all GPIOs
    //TO DELETE: TURN LED OFF
    gpio_set_value(morse_gpio[0].gpio, 0); 
-   
+   free_irq(switch_irqs[0],NULL);
    
    // unregister all GPIOs
    gpio_free_array(morse_gpio, ARRAY_SIZE(morse_gpio));
