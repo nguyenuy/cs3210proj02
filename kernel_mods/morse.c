@@ -114,7 +114,7 @@ static int __init morse_init(void)
       goto fail1;
    }
    gpio_set_value(morse_gpio[0].gpio, 1);
-   /*
+   
    // register the switch gpio
    ret = gpio_request_array(switch_gpio,ARRAY_SIZE(switch_gpio));
    if(ret){
@@ -141,8 +141,6 @@ static int __init morse_init(void)
    initialize_char_to_bin_array();
 
    //TO DELETE: TURN LED ON
-
-   */
 
    return 0;
 
