@@ -58,6 +58,14 @@ static struct file_operations fops = {
 	.release = device_release
 };
 
+irqreturn_t change_state_interrupt(int irq, void *dev_id, struct pt_regs *regs){
+  printk(KERN_ALERT "Interrupt\n");
+  gpio_set_value(led_gpio, 0);
+  sleep(5);
+  gpio_set_value(led_gpio, 1);
+  return IRQ_HANDLED;
+}
+
 /*
  * This function is called when the module is loaded
  */
@@ -85,6 +93,30 @@ int init_module(void)
 	  printk(KERN_INFO "The requested GPIO is available \n");	
 	}
 	gpio_set_value(led_gpio, 1);
+
+	if(gpio_request(GP_7,"GP_7")){
+	  printk(KERN_ALERT "can't set interrupt of GP 7\n");
+	  return -1;
+	}
+
+	if((dir_err = gpio_direction_input(GP_7)) < 0){
+	  printk(KERN_ALTERT "cannot set GP 7 as input");
+	  return -1;
+	}
+
+	/*
+	 * the interrupts
+	 */
+
+	if((irq_line = gpio_to_irq(GP_7)) < 0){
+	  printk(KERN_ALERT 'GP 7 cannot be used as interrupt\n');
+	  return -1;
+	}
+
+	if((irq_req_res = request_irq(irq_line,change_state_interrupt, IRQF_TRIGGER_FALLING, "gpio_change_state", NULL)) < 0){
+	  printk(KERN_ALERT 'cannot install GP 7\n');
+	}
+	
 
 	return SUCCESS;
 }
