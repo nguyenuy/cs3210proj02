@@ -56,11 +56,12 @@ static int __init morse_init(void)
   printk(KERN_INFO "Remove the device file and module when done.\n");
   gpio_set_value(morse_gpio[0].gpio, 1);
   
-  int BUF_LEN = 16;
-  int LONG_WAIT = 100;
-  int unit = 4;
-  int MAX_DIT = 15;
-
+  
+  const int BUF_LEN = 16;
+  const int LONG_WAIT = 100;
+  const int unit = 4;
+  const int MAX_DIT = 15;
+  /*
   while(1){
     if(readSignal() == 1){
       printf("receive a press\n");
@@ -93,7 +94,7 @@ static int __init morse_init(void)
       printk(KERN_INFO "Do you mean %c?\n", result);
     }
   }
-
+  */
    return 0;
 }
 
