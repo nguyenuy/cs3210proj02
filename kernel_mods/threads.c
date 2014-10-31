@@ -22,6 +22,7 @@ int var = 0, Device_Open = 0, key = 0;
 char currentLetter = 0;
 static char msg[BUF_LEN];  /* The msg the device will give when asked */
 static char *msg_Ptr;
+char morseMap[512];
 
 
 static int device_open(struct inode *, struct file *);
@@ -126,8 +127,6 @@ while (1){
     const int LONG_WAIT = 100;
     const int unit = 4;
     const int MAX_DIT = 15;
-    char morseMap[512];
-    initMorseMap(morseMap);
     int buf[16];
     init(buf, 16);
     int cnt = 0;
@@ -152,9 +151,9 @@ while (1){
                 buf[cnt++] = (cnt1 > MAX_DIT?0:1);
             }
         
-            key = getDecodeKey(buf, 16);
-            currentLetter = morseMap[key];
         }
+        key = getDecodeKey(buf, 16);
+        currentLetter = morseMap[key];
     }
 }
 return 0;
@@ -189,6 +188,7 @@ int thread_init (void) {
  if(!msg_Ptr) {
     return -ENOMEM;
  }
+ initMorseMap(morseMap);
  thread1 = kthread_create(thread_fn,NULL,name);
  if((thread1))
   {
