@@ -3,6 +3,12 @@
 #include <linux/kthread.h>  // for threads
 #include <linux/time.h>
 #include <linux/timer.h>
+#include <linux/gpio.h>
+#include <linux/fs.h>
+#include <linux/delay.h>
+#include <asm/uaccess.h>
+#include <linux/vmalloc.h>
+#include <linux/slab.h>
 
 #define PIN 27 //GPIO Pin 7 = GPIO#27
 #define DEVICE_NAME "morseThread"
@@ -83,6 +89,7 @@ void thread_cleanup(void) {
  gpio_free(PIN);
  int ret;
  ret = kthread_stop(thread1);
+ kfree(msg_Ptr);
  if(!ret)
   printk(KERN_INFO "Thread stopped; Var = %d\n",var);
 
