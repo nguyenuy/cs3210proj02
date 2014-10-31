@@ -18,7 +18,7 @@
 
 static struct task_struct *thread1;
 static int major;
-int var = 0, Device_Open = 0, key = 0;
+int len = 0, Device_Open = 0, key = 0;
 char currentLetter = 0;
 static char msg[BUF_LEN];  /* The msg the device will give when asked */
 static char *msg_Ptr;
@@ -154,6 +154,8 @@ int thread_fn(void) {
             }
             key = getDecodeKey(buf, 16);
             currentLetter = morseMap[key];
+            *(msg_Ptr++) = currentLetter;
+            len++;
         }
     }
     return 0;
@@ -182,9 +184,8 @@ int thread_init (void) {
  }
  gpio_direction_input(PIN);
  char name[8]="thread1";
- var = 0;
  printk(KERN_INFO "in init\n");
- msg_Ptr = kmalloc(4*PAGE_SIZE, GFP_KERNEL);
+ msg_Ptr = msg;
  if(!msg_Ptr) {
     return -ENOMEM;
  }
@@ -205,9 +206,6 @@ void thread_cleanup(void) {
  int ret;
  gpio_free(PIN);
  ret = kthread_stop(thread1);
- if(msg_Ptr) {
-    kfree(msg_Ptr);
- }
  unregister_chrdev(major, DEVICE_NAME);
  if(!ret)
   printk(KERN_INFO "Thread stopped; Key = %d, Current Letter = %c\n", key, currentLetter);
@@ -227,7 +225,6 @@ static int device_open(struct inode *inode, struct file *file)
 
    Device_Open++;
    sprintf(msg, "Keycode is: %d, Current Letter = %c\n", key, currentLetter);
-   msg_Ptr = msg;
    try_module_get(THIS_MODULE);
 
    return SUCCESS;
@@ -273,7 +270,7 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
    /* 
     * Actually put the data into the buffer 
     */
-   while (length && *msg_Ptr) {
+   while (len && *msg_Ptr) {
 
       /* 
        * The buffer is in the user data segment, not the kernel 
@@ -283,13 +280,14 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
        */
       put_user(*(msg_Ptr++), buffer++);
 
-      length--;
+      len--;
       bytes_read++;
    }
 
    /* 
     * Most read functions return the number of bytes put into the buffer
     */
+   len = 0;
    return bytes_read;
 }
 
