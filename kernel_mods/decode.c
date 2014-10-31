@@ -42,7 +42,7 @@ morse_t charToBin[CHAR_SIZE];
  */
 
 int readSignal(){
-  return gpio_get_value(switch_gpio[0].gpio)
+  return gpio_get_value(switch_gpio[0].gpio);
 }
 
 
