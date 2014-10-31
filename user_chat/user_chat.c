@@ -27,8 +27,8 @@ void timeoutChar() {
     while(1) {
 		
 		diff = clock() - start;
-		seconds = diff / 100000;
-		if(seconds < 10) {
+		seconds = diff / 1000000;
+		if(seconds < 15) {
 			while(fscanf(f, "%c", &ch) != EOF) {
 				*(recvP++) = ch;
 				recvLength++;
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 		
 		printf("Please enter a message to send: ");
 		scanf("%s", send);
-		printf("Sending: %s", send);
+		printf("Sending: %s\n", send);
 		
 		f = fopen("/dev/morseThread", "r+");
 		if(f == NULL) {
