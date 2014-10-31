@@ -37,9 +37,15 @@ typedef __u16 morse_t;
 int len,temp;
 morse_t charToBin[CHAR_SIZE];
 
+
+static int charToBin[512];
 /* 
  * Global variables are declared as static, so are global within the file. 
  */
+
+int readSignal(){
+  return gpio_get_value(switch_gpio[0].gpio)
+}
 
 
 static int __init morse_init(void)
@@ -51,6 +57,45 @@ static int __init morse_init(void)
    printk(KERN_INFO "the device file.\n");
    printk(KERN_INFO "Remove the device file and module when done.\n");
    gpio_set_value(morse_gpio[0].gpio, 1);
+   
+   const int BUF_LEN = 16;
+   const int LONG_WAIT = 100;
+   const int unit = 4;
+   const int MAX_DIT = 15;
+
+   while(1){
+     if(readSignal() == 1){
+       printf("receive a press\n");
+       int buf[BUF_LEN];
+       init(buf,BUF_LEN);
+       int cnt = 0;
+       while(1){
+	 int cnt1 = 0, cnt0 = 0;
+	 while(readSignal() == 1){
+	   cnt1++;
+	   usleep(unit);
+	 }
+	 while(readSignal() == 0){
+	   cnt0++;
+	   if(cnt0 > LONG_WAIT)
+	     break;
+	   else
+	     usleep(unit);
+	 }
+	 if(cnt0 > LONG_WAIT){
+	   buf[cnt++] = (cnt1 > MAX_DIT?0:1);
+	   break;
+	 }else{
+	   buf[cnt++] = (cnt1 > MAX_DIT?0:1);
+	 }
+       }
+       printArray(buf, BUF_LEN);
+       int key = getDecodeKey(buf, BUF_LEN);
+       char result = morseMap[key];
+       printk(KERN_INFO "Do you mean %c?\n", result);
+     }
+   }
+
    return 0;
 }
 
@@ -66,7 +111,7 @@ static void __exit morse_exit(void)
 
 /* *******************************/
 void initialize_char_to_bin_array() {
-int i=0;
+  int i=0;
   for(; i<CHAR_SIZE;i++){
     charToBin[i] = 0;
   }
