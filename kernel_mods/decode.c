@@ -137,9 +137,9 @@ static int __init morse_init(void)
   initMorseMap(morseMap);
 
   int buff_len = 16;
-  int LONG_WAIT = 100;
+  int LONG_WAIT = 20;
   int unit = 4;
-  int MAX_DIT = 15;
+  int MAX_DIT = 6;
   
   
   int iter = 1;
