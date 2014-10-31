@@ -116,12 +116,14 @@ void initMorseMap(char* binToChar){
   binToChar[0b11111111]= ' ';
 }
 
-void init(char* A, int n){
+void init(int* A, int n){
   int i=0;
   for(; i<n; i++){
     A[i] = -2;
   }
 }
+
+
 
 static int __init morse_init(void)
 {
@@ -145,7 +147,7 @@ static int __init morse_init(void)
   int iter = 1;
   for(; iter<100000; iter++){
     if(readSignal() == 1){
-      char buf[buff_len];
+      int buf[buff_len];
       init(buf,buff_len);
       int cnt = 0;
       while(1){
