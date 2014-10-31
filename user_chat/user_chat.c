@@ -21,6 +21,7 @@ int recvLength = 0;
 FILE *f;
 
 void timeoutChar() {
+	f = fopen("/root/test.txt", "r+");
 	clock_t start = clock(), diff;
 	int seconds;
     while(1) {
@@ -35,6 +36,7 @@ void timeoutChar() {
 				start = clock();
 			}
 		} else {
+			fclose(f);
 			break;
 		}
 		
@@ -46,7 +48,6 @@ int main(int argc, char* argv[])
 {     
 	
       //Initialization of kernel drivers
-    f = fopen("/dev/morseThread", "rw");
 	
 	sendP = send;
 	recvP = recv;
@@ -64,7 +65,9 @@ int main(int argc, char* argv[])
 		scanf("%s", send);
 		printf("Sending: %s", send);
 		
+		f = fopen("/root/test.txt", "r+");
 		fprintf(f, "%s", send);
+		fclose(f);
 		
 		timeoutChar();
 		*(recvP) = '\0';
