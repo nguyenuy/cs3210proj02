@@ -30,6 +30,7 @@ char translated[1024];
 char flashStr[1024];
 int transLength = 0;
 int flashLength = 0;
+char english[256];
 
 
 static int device_open(struct inode *, struct file *);
@@ -185,13 +186,13 @@ void initialize(){
 
 int flash(int gpio, int milliseconds) {
     gpio_set_value(gpio, 1);
-    msleep(1000 * milliseconds);
+    msleep(500 * milliseconds);
     gpio_set_value(gpio, 0);
     return 0;
 }
 
 int sleepLED(int milliseconds) {
-    msleep(1000 * milliseconds);
+    msleep(50 * milliseconds);
     return 0;
 }
 
@@ -242,18 +243,18 @@ void createFlashString() {
         int i=0;
         char *p = flashStr;
         for(i; i<transLength; i++) {
-                char current = *(translated+i);
+                char currentC = *(translated+i);
                 char next = *(translated+i+1);
                 
-                if(current == 'i') {
+                if(currentC == 'i') {
                         *(p++) = 'f';
                         *(p++) = 1;
                         flashLength += 2;
-                } else if (current == 'a') {
+                } else if (currentC == 'a') {
                         *(p++) = 'f';
                         *(p++) = 3;
                         flashLength += 2;
-                } else if (current == ' ') {
+                } else if (currentC == ' ') {
                         if(next == 'S') {
                                 *(p++) = 'w';
                                 *(p++) = 7;
@@ -262,7 +263,7 @@ void createFlashString() {
                                 *(p++) = 3;
                         }
                         flashLength += 2;
-                } else if(current == '-') {
+                } else if(currentC == '-') {
                         *(p++) = 'w';
                         *(p++) = 1;
                         flashLength += 2;
@@ -275,13 +276,13 @@ void createFlashString() {
 void flashLED(int gpio) {
         int i=0;
         for(i; i<flashLength; i+=2) {
-                char current = *(flashStr+i);
+                char currentC = *(flashStr+i);
                 char next = *(flashStr+i+1);
                 
-                if(current == 'f') {
-                        flash(gpio, next*500);
-                } else if(current == 'w') {
-                        sleepLED(next*500);
+                if(currentC == 'f') {
+                        flash(gpio, next);
+                } else if(currentC == 'w') {
+                        sleepLED(next);
                         
                 }
         }
@@ -488,25 +489,25 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
 static ssize_t
 device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
 {
-    char msgstring[1024];
-    int msglength;
-    copy_from_user(msgstring, buff, len);
-    msglength = len;
-    
+    int msglength, i=0;
+	for(; i<len && i < 32; i++) {
+		get_user(english[i], buff + i);
+	}
+    printk(KERN_INFO "Message: %s", english);
     transLength = 0;
-    string_to_morse(msgstring, msglength);
+    string_to_morse(english, i);
     createFlashString();
+    printk(KERN_INFO "transLength = %d, msglength = %d", transLength, msglength);
     flashLED(3);
     
-    int i=0;
-    for(; i<1024; i++) {
-        *(translated+i) = 0;
-        *(flashStr+i) = 0;
+    int j=0;
+    for(; j<1024; j++) {
+        *(translated+j) = 0;
+        *(flashStr+j) = 0;
     }
     flashLength = 0;
     transLength = 0;
-    
-    return 0;
+    return i;
     
 }
 
