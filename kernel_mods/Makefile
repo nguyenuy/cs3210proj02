@@ -1,5 +1,4 @@
 ifneq ($(KERNELRELEASE),)
-	obj-m += decode.o
     obj-m += threads.o
 else
 

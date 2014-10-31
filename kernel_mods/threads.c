@@ -212,7 +212,7 @@ void thread_cleanup(void) {
  ret = kthread_stop(thread1);
  unregister_chrdev(major, DEVICE_NAME);
  if(!ret)
-  printk(KERN_INFO "Thread stopped; Key = %d, Current Letter = %c\n", key, currentLetter);
+  printk(KERN_INFO "Thread stopped; Key = %d, Current Letter = %c\n, len = %d", key, currentLetter, len);
 
 }
 
@@ -273,7 +273,7 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
    /* 
     * Actually put the data into the buffer 
     */
-   while (len && *msg_Ptr) {
+   while (length && *msg_Ptr) {
 
       /* 
        * The buffer is in the user data segment, not the kernel 
@@ -283,7 +283,7 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
        */
       put_user(*(msg_Ptr++), buffer++);
 
-      len--;
+      length--;
       bytes_read++;
    }
 
@@ -292,6 +292,7 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
     */
    len = 0;
    msg_Ptr = msg;
+   int i = 0;
    for(; i<BUF_LEN; i++) {
         *(msg_Ptr + i) = 0;
    }
