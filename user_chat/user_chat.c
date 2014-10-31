@@ -7,34 +7,72 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 
-#define MSGLENGTH 1000
+char send[256];
+char recv[256];
 
-int main(void)
-{     
+char* sendP;
+char* recvP;
+char ch;
 
-      //Initialization of kernel drivers
-      int fd_write = open("/dev/writeMorse", O_WRONLY);
-      int fd_read = open("/dev/readMorse", O_RDONLY);
+int recvLength = 0;
 
-      //TODO: make program continuously loop
-      //Program currently only sends and receives message one time. 
-      //Nothing else.
+FILE *f;
 
-      //Message buffer variables
-      char sendstring[MSGLENGTH];
-      int sendlength;
-      char rcvstring[MSGLENGTH];
-      int rcvlength;
-
-      //Get Local User Input to Send String
-      printf("Enter a message to send [1000 characters max]: ");
-      fgets(sendstring,MSGLENGTH,stdin);
-      printf("Sending Message: %s\n", sendstring);
-      sendlength = strlen(sendstring);
-
-      //Get Remote User Input (Morse Switch Button)
-      read(fd_read, rcvstring, MSGLENGTH);
-      printf("Received Message: %s\n", rcvstring);
-      return 0;
+void timeoutChar() {
+	clock_t start = clock(), diff;
+	int seconds;
+    while(1) {
+		
+		diff = clock() - start;
+		seconds = diff * CLOCKS_PER_SEC;
+		if(seconds < 10) {
+			while(fscanf(f, "%c", &ch) != EOF) {
+				*(recvP++) = ch;
+				recvLength++;
+				seconds = 0;
+				start = clock();
+			}
+		} else {
+			break;
+		}
+		
+	}
+    
 }
+
+int main(int argc, char* argv[])
+{     
+	
+      //Initialization of kernel drivers
+    f = fopen("/dev/morseThread", "rw");
+	
+	sendP = send;
+	recvP = recv;
+	
+	int i = 0;
+	
+    if(f == NULL) {
+		printf("No Mem Error");
+		return -1;
+	}
+	
+	while(1) {
+		
+		printf("Please enter a message to send: ");
+		scanf("%s", send);
+		fprintf(f, "%s", send);
+		
+		timeoutChar();
+		*(recvP) = '\0';
+		recvP = recv;
+		printf("Received: %s", recv);
+		
+	}
+	
+	fclose(f);
+	
+}
+
+
