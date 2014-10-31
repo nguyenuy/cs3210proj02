@@ -1,10 +1,6 @@
 ifneq ($(KERNELRELEASE),)
 	obj-m += decode.o
-    #obj-m += morse.o
-   # obj-m += gpiomod.o
-  #  obj-m += threads.o
- #   obj-m += morseLED.o
-#    obj-m += device.o
+    obj-m += threads.o
 else
 
 KERNELDIR ?= /usr/src/linux-headers-3.8.7/
