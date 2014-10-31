@@ -111,52 +111,52 @@ void initMorseMap(char* binToChar){
 
 int thread_fn(void) {
 
-unsigned long j0,j1;
-int delay = 600*HZ;
-j0 = jiffies;
-j1 = j0 + delay;
+    unsigned long j0,j1;
+    int delay = 600*HZ;
+    j0 = jiffies;
+    j1 = j0 + delay;
 
-while (1){ 
-    if(kthread_should_stop()) {
-        do_exit(0);
-    }
-  schedule();
-  
-  if(gpio_get_value_cansleep(PIN) == 1) {
-    printk(KERN_INFO "Received a key press!");
-    const int LONG_WAIT = 100;
-    const int unit = 4;
-    const int MAX_DIT = 15;
-    int buf[16];
-    init(buf, 16);
-    int cnt = 0;
-        while(1) {
-            int cnt1 = 0, cnt0 = 0;
-            while(gpio_get_value_cansleep(PIN) == 1) {
-                cnt1++;
-                msleep(unit);
-            }
-            while(gpio_get_value_cansleep(PIN) == 0) {
-                cnt0++;
-                if(cnt0 > LONG_WAIT) {
-                    break;
-                } else {
+    while (1){ 
+        if(kthread_should_stop()) {
+            do_exit(0);
+        }
+      schedule();
+      
+      if(gpio_get_value_cansleep(PIN) == 1) {
+        printk(KERN_INFO "Received a key press!");
+        const int LONG_WAIT = 100;
+        const int unit = 4;
+        const int MAX_DIT = 15;
+        int buf[16];
+        init(buf, 16);
+        int cnt = 0;
+            while(1) {
+                int cnt1 = 0, cnt0 = 0;
+                while(gpio_get_value_cansleep(PIN) == 1) {
+                    cnt1++;
                     msleep(unit);
                 }
+                while(gpio_get_value_cansleep(PIN) == 0) {
+                    cnt0++;
+                    if(cnt0 > LONG_WAIT) {
+                        break;
+                    } else {
+                        msleep(unit);
+                    }
+                }
+                if(cnt0 > LONG_WAIT) {
+                    buf[cnt++] = (cnt1 > MAX_DIT?0:1);
+                    break;
+                } else {
+                    buf[cnt++] = (cnt1 > MAX_DIT?0:1);
+                }
+            
             }
-            if(cnt0 > LONG_WAIT) {
-                buf[cnt++] = (cnt1 > MAX_DIT?0:1);
-                break;
-            } else {
-                buf[cnt++] = (cnt1 > MAX_DIT?0:1);
-            }
-        
+            key = getDecodeKey(buf, 16);
+            currentLetter = morseMap[key];
         }
-        key = getDecodeKey(buf, 16);
-        currentLetter = morseMap[key];
     }
-}
-return 0;
+    return 0;
 }
 
 int thread_init (void) {
@@ -202,12 +202,13 @@ int thread_init (void) {
 
 
 void thread_cleanup(void) {
-
- unregister_chrdev(major, DEVICE_NAME);
- gpio_free(PIN);
  int ret;
+ gpio_free(PIN);
  ret = kthread_stop(thread1);
- kfree(msg_Ptr);
+ if(msg_Ptr) {
+    kfree(msg_Ptr);
+ }
+ unregister_chrdev(major, DEVICE_NAME);
  if(!ret)
   printk(KERN_INFO "Thread stopped; Key = %d, Current Letter = %c\n", key, currentLetter);
 
