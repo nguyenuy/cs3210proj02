@@ -48,11 +48,12 @@ while (time_before(jiffies, j1)){
     }
   schedule();
   
-  if(gpio_get_value(PIN) == 1) {
+  if(gpio_get_value_cansleep(PIN) == 1) {
     var = 1;
   } else {
     var = 0;
   }
+  break;
 }
 return 0;
 }
