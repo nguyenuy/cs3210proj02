@@ -46,6 +46,16 @@ int readSignal(){
 }
 
 
+int getDecodeKey(int* buf,int n){
+  int ans = 1;
+  int i=0;
+  for(; i<n && buf[i] >= 0; i++){
+    ans = (ans<<1) + buf[i];
+  }
+  
+  return ans;
+}
+
 static int __init morse_init(void)
 {
   printk(KERN_INFO "%s\n", __func__);
@@ -64,13 +74,13 @@ static int __init morse_init(void)
   
   while(1){
     if(readSignal() == 1){
-      printf("receive a press\n");
+      printk( KERN_INFO "receive a press\n");
       int buf[BUF_LEN];
       init(buf,BUF_LEN);
       int cnt = 0;
       //printArray(buf, BUF_LEN);
       int key = getDecodeKey(buf, BUF_LEN);
-      char result = morseMap[key];
+      char result = binToChar[key];
       printk(KERN_INFO "Do you mean %c?\n", result);
     }
   }
