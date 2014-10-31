@@ -12,6 +12,7 @@ int thread_fn(void) {
 
 unsigned long j0,j1;
 int delay = 60*HZ;
+int var = 0;
 j0 = jiffies;
 j1 = j0 + delay;
 
@@ -20,8 +21,10 @@ while (time_before(jiffies, j1)){
         do_exit(0);
     }
   schedule();
+  var++;
 }
 printk(KERN_INFO "In thread1");
+sprintf("Var = %d", var);
 return 0;
 }
 
