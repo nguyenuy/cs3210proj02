@@ -18,7 +18,7 @@
 
 static struct task_struct *thread1;
 static int major;
-int var = 0, Device_Open = 0;
+int var = 0, Device_Open = 0, key = 0;
 static char msg[BUF_LEN];  /* The msg the device will give when asked */
 static char *msg_Ptr;
 
@@ -35,6 +35,23 @@ static struct file_operations fops = {
    .release = device_release
 };
 
+void init(int* A, int n){
+  int i=0;
+  for(; i<n; i++){
+    A[i] = -2;
+  }
+}
+
+int getDecodeKey(int* buf,int n){
+  int ans = 1;
+  int i=0;
+  for(; i<n && buf[i] >= 0; i++){
+    ans = (ans<<1) + buf[i];
+  }
+  
+  return ans;
+}
+
 int thread_fn(void) {
 
 unsigned long j0,j1;
@@ -42,18 +59,44 @@ int delay = 600*HZ;
 j0 = jiffies;
 j1 = j0 + delay;
 
-while (time_before(jiffies, j1)){ 
+while (1){ 
     if(kthread_should_stop()) {
         do_exit(0);
     }
   schedule();
   
   if(gpio_get_value_cansleep(PIN) == 1) {
-    var = 1;
-  } else {
-    var = 0;
-  }
-  break;
+    printk(KERN_INFO "Received a key press!");
+    const int LONG_WAIT = 100;
+    const int unit = 4;
+    const int MAX_DIT = 15;
+    int buf[16];
+    init(buf, 16);
+    int cnt = 0;
+        while(1) {
+            int cnt1 = 0, cnt0 = 0;
+            while(gpio_get_value_cansleep(PIN) == 1) {
+                cnt1++;
+                msleep(unit);
+            }
+            while(gpio_get_value_cansleep(PIN) == 0) {
+                cnt0++;
+                if(cnt0 > LONG_WAIT) {
+                    break;
+                } else {
+                    msleep(unit);
+                }
+            }
+            if(cnt0 > LONG_WAIT) {
+                buf[cnt++] = (cnt1 > MAX_DIT?0:1);
+                break;
+            } else {
+                buf[cnt++] = (cnt1 > MAX_DIT?0:1);
+            }
+        
+            key = getDecodeKey(buf, 16);
+        }
+    }
 }
 return 0;
 }
@@ -107,7 +150,7 @@ void thread_cleanup(void) {
  ret = kthread_stop(thread1);
  kfree(msg_Ptr);
  if(!ret)
-  printk(KERN_INFO "Thread stopped; Var = %d\n",var);
+  printk(KERN_INFO "Thread stopped; Key = %d\n",key);
 
 }
 
@@ -123,7 +166,7 @@ static int device_open(struct inode *inode, struct file *file)
       return -EBUSY;
 
    Device_Open++;
-   sprintf(msg, "Var is currently: %d\n", var);
+   sprintf(msg, "Keycode is: %d\n", key);
    msg_Ptr = msg;
    try_module_get(THIS_MODULE);
 
