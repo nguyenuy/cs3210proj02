@@ -174,11 +174,9 @@ static int __init morse_init(void)
       }
       int key = getDecodeKey(buf, buff_len);
       char result = morseMap[key];
-      //printk(KERN_INFO "do you mean %c?\n", result);
-      if(box_filled < box_cap){
-	box[box_filled++] = result;
-      }else
-	break;
+      printk(KERN_INFO "do you mean %c?\n", result);
+      break;
+      
     }
   }
   int j=0;
