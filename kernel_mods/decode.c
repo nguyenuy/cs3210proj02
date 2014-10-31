@@ -56,32 +56,6 @@ int getDecodeKey(int* buf,int n){
   return ans;
 }
 
-static int __init morse_init(void)
-{
-  printk(KERN_INFO "%s\n", __func__);
-   
-  printk(KERN_INFO "the driver, create a dev file with\n");
-  printk(KERN_INFO "Try various minor numbers. Try to cat and echo to\n");
-  printk(KERN_INFO "the device file.\n");
-  printk(KERN_INFO "Remove the device file and module when done.\n");
-  gpio_set_value(morse_gpio[0].gpio, 1);
-
-  initialize_char_to_bin_array();
-  
-
-  return 0;
-}
-
-
-/*
- * Module exit function
- */
-static void __exit morse_exit(void)
-{
-   printk(KERN_INFO "%s\n", __func__);
-   gpio_set_value(morse_gpio[0].gpio, 0);
-}
-
 /* *******************************/
 void initialize_char_to_bin_array() {
   int i=0;
@@ -147,6 +121,33 @@ void initialize_char_to_bin_array() {
     char lower = ch - diff;
     charToBin[ch] = charToBin[lower];
   }   
+}
+
+
+static int __init morse_init(void)
+{
+  printk(KERN_INFO "%s\n", __func__);
+   
+  printk(KERN_INFO "the driver, create a dev file with\n");
+  printk(KERN_INFO "Try various minor numbers. Try to cat and echo to\n");
+  printk(KERN_INFO "the device file.\n");
+  printk(KERN_INFO "Remove the device file and module when done.\n");
+  gpio_set_value(morse_gpio[0].gpio, 1);
+
+  initialize_char_to_bin_array();
+  
+
+  return 0;
+}
+
+
+/*
+ * Module exit function
+ */
+static void __exit morse_exit(void)
+{
+   printk(KERN_INFO "%s\n", __func__);
+   gpio_set_value(morse_gpio[0].gpio, 0);
 }
 
 
