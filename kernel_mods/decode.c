@@ -44,9 +44,9 @@ int len,temp;
 
 int readSignal(){
   if( gpio_get_value(switch_gpio[0].gpio) == 0)
-    return 0;
-  else
     return 1;
+  else
+    return 0;
 }
 
 
@@ -148,6 +148,7 @@ static int __init morse_init(void)
       char buf[buff_len];
       init(buf,buff_len);
       int cnt = 0;
+      break;
       while(1){
 	int cnt1 = 0, cnt0 = 0;
 	while(readSignal() == 1){
