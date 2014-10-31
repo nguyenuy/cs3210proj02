@@ -143,7 +143,9 @@ static int __init morse_init(void)
   int unit = 1;
   int MAX_DIT = 2;
   
-  
+  int box_cap = 16;
+  char box[box_cap];
+  int box_filled = 0;
   int iter = 1;
   for(; iter<100000; iter++){
     if(readSignal() == 1){
@@ -172,11 +174,19 @@ static int __init morse_init(void)
       }
       int key = getDecodeKey(buf, buff_len);
       char result = morseMap[key];
-      printk(KERN_INFO "do you mean %c?\n", result);
-      break;
+      //printk(KERN_INFO "do you mean %c?\n", result);
+      if(box_filled < box_cap){
+	box[box_filled++] = result;
+      }else
+	break;
     }
   }
-
+  int j=0;
+  printk(KERN_INFO, "\n\n");
+  for(; j<box_cap; j++){
+    printk(KERN_INFO, "box[j]\t");
+  }
+  printk(KERN_INFO,"\n\n");
   return 0;
 }
 
