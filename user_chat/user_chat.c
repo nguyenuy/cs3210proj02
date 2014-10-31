@@ -27,7 +27,7 @@ void timeoutChar() {
 		
 		diff = clock() - start;
 		seconds = diff * CLOCKS_PER_SEC;
-		if(seconds < 10) {
+		if(seconds > 10) {
 			while(fscanf(f, "%c", &ch) != EOF) {
 				*(recvP++) = ch;
 				recvLength++;
@@ -62,6 +62,8 @@ int main(int argc, char* argv[])
 		
 		printf("Please enter a message to send: ");
 		scanf("%s", send);
+		printf("Sending: %s", send);
+		
 		fprintf(f, "%s", send);
 		
 		timeoutChar();
