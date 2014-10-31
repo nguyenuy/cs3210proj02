@@ -19,6 +19,7 @@
 static struct task_struct *thread1;
 static int major;
 int var = 0, Device_Open = 0, key = 0;
+char currentLetter = 0;
 static char msg[BUF_LEN];  /* The msg the device will give when asked */
 static char *msg_Ptr;
 
@@ -52,6 +53,61 @@ int getDecodeKey(int* buf,int n){
   return ans;
 }
 
+void initMorseMap(char* binToChar){
+  binToChar[0b110] = 'a';
+  binToChar[0b10111] = 'b';
+  binToChar[0b10101] = 'c';
+  binToChar[0b1011] = 'd';
+  binToChar[0b11] = 'e';
+  binToChar[0b11101] = 'f';
+  binToChar[0b1001] = 'g';
+  binToChar[0b11111] = 'h';
+  binToChar[0b111] = 'i';
+  binToChar[0b11000] = 'j';
+  binToChar[0b1010] = 'k';
+  binToChar[0b11011] = 'l';
+  binToChar[0b100] = 'm';
+  binToChar[0b101] = 'n';
+  binToChar[0b1000] = 'o';
+  binToChar[0b11001] = 'p';
+  binToChar[0b10010] = 'q';
+  binToChar[0b1101] = 'r';
+  binToChar[0b1111] = 's';
+  binToChar[0b10] = 't';
+  binToChar[0b1110] = 'u';
+  binToChar[0b11110] = 'v';
+  binToChar[0b1100] = 'w';
+  binToChar[0b10110] = 'x';
+  binToChar[0b10100] = 'y';
+  binToChar[0b10011] = 'z';
+  binToChar[0b110000] = '1';
+  binToChar[0b111000] = '2';
+  binToChar[0b111100] = '3';
+  binToChar[0b111110] = '4';
+  binToChar[0b111111] = '5';
+  binToChar[0b101111] = '6';
+  binToChar[0b100111] = '7';
+  binToChar[0b100011] = '8';
+  binToChar[0b100001] = '9';
+  binToChar[0b100000] = '0';
+  binToChar[0b1101010] = '.';
+  binToChar[0b1110011] = '?';
+  binToChar[0b1010100] = '!';
+  binToChar[0b101001] = '(';
+  binToChar[0b1010011] = ')';
+  binToChar[0b1000111] = ':';
+  binToChar[0b101110] = '=';
+  binToChar[0b1011110] = '-';
+  binToChar[0b1101101] = '"';
+  binToChar[0b1001100] = ',';
+  binToChar[0b1100001] = '\'';
+  binToChar[0b101101] = '/';
+  binToChar[0b1010101] = ';';
+  binToChar[0b1110010] = '_';
+  binToChar[0b1100101] = '@';
+  binToChar[0b11111111]= ' ';
+}
+
 int thread_fn(void) {
 
 unsigned long j0,j1;
@@ -70,6 +126,8 @@ while (1){
     const int LONG_WAIT = 100;
     const int unit = 4;
     const int MAX_DIT = 15;
+    char morseMap[512];
+    initMorseMap(morseMap);
     int buf[16];
     init(buf, 16);
     int cnt = 0;
@@ -95,6 +153,7 @@ while (1){
             }
         
             key = getDecodeKey(buf, 16);
+            currentLetter = morseMap[key];
         }
     }
 }
@@ -150,7 +209,7 @@ void thread_cleanup(void) {
  ret = kthread_stop(thread1);
  kfree(msg_Ptr);
  if(!ret)
-  printk(KERN_INFO "Thread stopped; Key = %d\n",key);
+  printk(KERN_INFO "Thread stopped; Key = %d, Current Letter = %c\n", key, currentLetter);
 
 }
 
@@ -166,7 +225,7 @@ static int device_open(struct inode *inode, struct file *file)
       return -EBUSY;
 
    Device_Open++;
-   sprintf(msg, "Keycode is: %d\n", key);
+   sprintf(msg, "Keycode is: %d, Current Letter = %c\n", key, currentLetter);
    msg_Ptr = msg;
    try_module_get(THIS_MODULE);
 
