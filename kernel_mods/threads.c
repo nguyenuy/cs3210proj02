@@ -13,6 +13,7 @@
 #define PIN 27 //GPIO Pin 7 = GPIO#27
 #define DEVICE_NAME "morseThread"
 #define BUF_LEN 120      /* Max length of the message from the device */
+#define SUCCESS 0
 
 
 static struct task_struct *thread1;
@@ -70,7 +71,10 @@ int thread_init (void) {
  char name[8]="thread1";
  var = 0;
  printk(KERN_INFO "in init\n");
- msg_Ptr = kmalloc(4*PAGE_SIZE);
+ msg_Ptr = kmalloc(4*PAGE_SIZE, GFP_KERNEL);
+ if(!msg_Ptr) {
+    return -ENOMEM;
+ }
  thread1 = kthread_create(thread_fn,NULL,name);
  if((thread1))
   {
