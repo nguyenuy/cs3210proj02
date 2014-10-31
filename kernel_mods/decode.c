@@ -43,7 +43,10 @@ morse_t charToBin[CHAR_SIZE];
  */
 
 int readSignal(){
-  return gpio_get_value(switch_gpio[0].gpio);
+  if( gpio_get_value(switch_gpio[0].gpio) == 0)
+    return 1;
+  else
+    return 0;
 }
 
 
