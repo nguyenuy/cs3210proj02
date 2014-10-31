@@ -136,14 +136,13 @@ static int __init morse_init(void)
 
   initialize_char_to_bin_array();
   
-  while(1){
+  int iter = 1;
+  for(; iter<100000; iter++){
     if(readSignal() == 1){
 
 
 
-    }else
-      printk(KERN_INFO "No signal\n");
-    
+    }    
   }
 
   return 0;
