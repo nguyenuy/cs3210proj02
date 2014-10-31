@@ -184,7 +184,7 @@ static int __init morse_init(void)
   int j=0;
   printk(KERN_INFO, "\n\n");
   for(; j<box_cap; j++){
-    printk(KERN_INFO, "box[j]\t");
+    printk(KERN_INFO, "%c\t",box[j] );
   }
   printk(KERN_INFO,"\n\n");
   return 0;
