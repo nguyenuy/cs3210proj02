@@ -303,7 +303,6 @@ int thread_fn(void) {
       schedule();
       
       if(gpio_get_value_cansleep(PIN) == 1) {
-        printk(KERN_INFO "Received a key press!");
         const int LONG_WAIT = 100;
         const int unit = 4;
         const int MAX_DIT = 15;
@@ -366,7 +365,6 @@ int thread_init (void) {
  gpio_direction_input(PIN);
  gpio_direction_output(LED, 0);
  char name[8]="thread1";
- printk(KERN_INFO "in init\n");
  msg_Ptr = msg;
  int i=0;
  for(; i<BUF_LEN; i++) {
@@ -380,7 +378,6 @@ int thread_init (void) {
  thread1 = kthread_create(thread_fn,NULL,name);
  if((thread1))
   {
-      printk(KERN_INFO "in if\n");
       wake_up_process(thread1);
   }
 
@@ -395,7 +392,7 @@ void thread_cleanup(void) {
  ret = kthread_stop(thread1);
  unregister_chrdev(major, DEVICE_NAME);
  if(!ret)
-  printk(KERN_INFO "Thread stopped; Key = %d, Current Letter = %c\n, len = %d", key, currentLetter, len);
+  printk(KERN_INFO "Thread stopped", key, currentLetter, len);
 
 }
 
@@ -493,11 +490,9 @@ device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
 	for(; i<len && i < 32; i++) {
 		get_user(english[i], buff + i);
 	}
-    printk(KERN_INFO "Message: %s", english);
     transLength = 0;
     string_to_morse(english, i);
     createFlashString();
-    printk(KERN_INFO "transLength = %d, msglength = %d", transLength, msglength);
     flashLED(3);
     
     int j=0;
