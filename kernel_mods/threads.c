@@ -11,9 +11,11 @@
 #include <linux/slab.h>
 
 #define PIN 27 //GPIO Pin 7 = GPIO#27
+#define LED 3 //GPIO for galileo LED = 3
 #define DEVICE_NAME "morseThread"
 #define BUF_LEN 120      /* Max length of the message from the device */
 #define SUCCESS 0
+#define CHAR_SIZE 256
 
 
 static struct task_struct *thread1;
@@ -23,6 +25,11 @@ char currentLetter = 0;
 static char msg[BUF_LEN];  /* The msg the device will give when asked */
 static char *msg_Ptr;
 char morseMap[512];
+short charToBin[CHAR_SIZE];
+char translated[1024];
+char flashStr[1024];
+int transLength = 0;
+int flashLength = 0;
 
 
 static int device_open(struct inode *, struct file *);
@@ -109,6 +116,178 @@ void initMorseMap(char* binToChar){
   binToChar[0b11111111]= ' ';
 }
 
+void initialize(){
+  int i=0;
+  for(; i<CHAR_SIZE;i++){
+    charToBin[i] = 0;
+  }
+  charToBin['a'] = 0b110;
+  charToBin['b'] = 0b10111;
+  charToBin['c'] = 0b10101;
+  charToBin['d'] = 0b1011;
+  charToBin['e'] = 0b11;
+  charToBin['f'] = 0b11101;
+  charToBin['g'] = 0b1001;
+  charToBin['h'] = 0b11111;
+  charToBin['i'] = 0b111;
+  charToBin['j'] = 0b11000;
+  charToBin['k'] = 0b1010;
+  charToBin['l'] = 0b11011;
+  charToBin['m'] = 0b100;
+  charToBin['n'] = 0b101;
+  charToBin['o'] = 0b1000;
+  charToBin['p'] = 0b11001;
+  charToBin['q'] = 0b10010;
+  charToBin['r'] = 0b1101;
+  charToBin['s'] = 0b1111;
+  charToBin['t'] = 0b10;
+  charToBin['u'] = 0b1110;
+  charToBin['v'] = 0b11110;
+  charToBin['w'] = 0b1100;
+  charToBin['x'] = 0b10110;
+  charToBin['y'] = 0b10100;
+  charToBin['z'] = 0b10011;
+  charToBin['1'] = 0b110000;
+  charToBin['2'] = 0b111000;
+  charToBin['3'] = 0b111100;
+  charToBin['4'] = 0b111110;
+  charToBin['5'] = 0b111111;
+  charToBin['6'] = 0b101111;
+  charToBin['7'] = 0b100111;
+  charToBin['8'] = 0b100011;
+  charToBin['9'] = 0b100001;
+  charToBin['0'] = 0b100000;
+  charToBin['.'] = 0b1101010;
+  charToBin['?'] = 0b1110011;
+  charToBin['!'] = 0b1010100;
+  charToBin['('] = 0b101001;
+  charToBin[')'] = 0b1010011;
+  charToBin[':'] = 0b1000111;
+  charToBin['='] = 0b101110;
+  charToBin['-'] = 0b1011110;
+  charToBin['"'] = 0b1101101;
+  charToBin[','] = 0b1001100;
+  charToBin['\'']= 0b1100001;
+  charToBin['/'] = 0b101101;
+  charToBin[';'] = 0b1010101;
+  charToBin['_'] = 0b1110010;
+  charToBin['@'] = 0b1100101;
+  charToBin[' '] = 0b11111111;
+  
+  char diff = 'A'-'a';
+  char ch = 'A';
+  for(; ch<='Z'; ch++){
+    char lower = ch - diff;
+    charToBin[ch] = charToBin[lower];
+  }
+  
+}
+
+int flash(int gpio, int milliseconds) {
+    gpio_set_value(gpio, 1);
+    msleep(1000 * milliseconds);
+    gpio_set_value(gpio, 0);
+    return 0;
+}
+
+int sleepLED(int milliseconds) {
+    msleep(1000 * milliseconds);
+    return 0;
+}
+
+int string_to_morse(char *buf, int length) {
+
+    int i=0;
+    char *p = translated;
+    for(; i<length; i++){
+        char ch = *(buf+i);
+        if(ch == ' ') {
+                *(p++) = 'S';
+                continue;
+        }
+        int shift = 15;
+        int bin = charToBin[ch];
+        for( ; shift>=0; shift--){
+          short mask = 1<<shift;
+          if((mask & bin) != 0)
+            break;
+        }
+
+    shift--;
+
+    for(; shift>=0; shift--){
+      short mask = 1<<shift;
+      if((mask & bin) != 0){
+            //*(p++) = 'd';
+            *(p++) = 'i';
+            transLength++;
+            //*(p++) = 't';
+          } else {
+            //*(p++) = 'd';
+            *(p++) = 'a';
+            transLength++;
+            //*(p++) = 'h';
+        }
+      *(p++) = (shift==0?' ':'-');
+      transLength++;
+        }
+    }
+
+    *(p) = '\0';
+
+    return 0;
+}
+
+void createFlashString() {
+        int i=0;
+        char *p = flashStr;
+        for(i; i<transLength; i++) {
+                char current = *(translated+i);
+                char next = *(translated+i+1);
+                
+                if(current == 'i') {
+                        *(p++) = 'f';
+                        *(p++) = 1;
+                        flashLength += 2;
+                } else if (current == 'a') {
+                        *(p++) = 'f';
+                        *(p++) = 3;
+                        flashLength += 2;
+                } else if (current == ' ') {
+                        if(next == 'S') {
+                                *(p++) = 'w';
+                                *(p++) = 7;
+                        } else {
+                                *(p++) = 'w';
+                                *(p++) = 3;
+                        }
+                        flashLength += 2;
+                } else if(current == '-') {
+                        *(p++) = 'w';
+                        *(p++) = 1;
+                        flashLength += 2;
+                }
+                
+                
+        }
+}
+
+void flashLED(int gpio) {
+        int i=0;
+        for(i; i<flashLength; i+=2) {
+                char current = *(flashStr+i);
+                char next = *(flashStr+i+1);
+                
+                if(current == 'f') {
+                        flash(gpio, next*500);
+                } else if(current == 'w') {
+                        sleepLED(next*500);
+                        
+                }
+        }
+}
+
+
 int thread_fn(void) {
 
     unsigned long j0,j1;
@@ -182,7 +361,9 @@ int thread_init (void) {
  if(g != 0) {
     return -EINVAL;
  }
+ g = gpio_request(LED, "led");
  gpio_direction_input(PIN);
+ gpio_direction_output(LED, 0);
  char name[8]="thread1";
  printk(KERN_INFO "in init\n");
  msg_Ptr = msg;
@@ -194,6 +375,7 @@ int thread_init (void) {
     return -ENOMEM;
  }
  initMorseMap(morseMap);
+ initialize();
  thread1 = kthread_create(thread_fn,NULL,name);
  if((thread1))
   {
@@ -267,13 +449,14 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
     * If we're at the end of the message, 
     * return 0 signifying end of file 
     */
+   msg_Ptr = msg;
    if (*msg_Ptr == 0)
       return 0;
 
    /* 
     * Actually put the data into the buffer 
     */
-   while (length && *msg_Ptr) {
+   while (len && *msg_Ptr) {
 
       /* 
        * The buffer is in the user data segment, not the kernel 
@@ -283,7 +466,7 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
        */
       put_user(*(msg_Ptr++), buffer++);
 
-      length--;
+      len--;
       bytes_read++;
    }
 
@@ -305,8 +488,26 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
 static ssize_t
 device_write(struct file *filp, const char *buff, size_t len, loff_t * off)
 {
-  printk(KERN_ALERT "Sorry, this operation isn't supported.\n");
-  return -EINVAL;
+    char msgstring[1024];
+    int msglength;
+    copy_from_user(msgstring, buff, len);
+    msglength = len;
+    
+    transLength = 0;
+    string_to_morse(msgstring, msglength);
+    createFlashString();
+    flashLED(3);
+    
+    int i=0;
+    for(; i<1024; i++) {
+        *(translated+i) = 0;
+        *(flashStr+i) = 0;
+    }
+    flashLength = 0;
+    transLength = 0;
+    
+    return 0;
+    
 }
 
 
