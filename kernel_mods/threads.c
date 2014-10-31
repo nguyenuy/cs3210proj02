@@ -18,7 +18,7 @@
 
 static struct task_struct *thread1;
 static int major;
-int var, Device_Open = 0;
+int var = 0, Device_Open = 0;
 static char msg[BUF_LEN];  /* The msg the device will give when asked */
 static char *msg_Ptr;
 
@@ -38,7 +38,7 @@ static struct file_operations fops = {
 int thread_fn(void) {
 
 unsigned long j0,j1;
-int delay = 60*HZ;
+int delay = 600*HZ;
 j0 = jiffies;
 j1 = j0 + delay;
 
@@ -47,7 +47,12 @@ while (time_before(jiffies, j1)){
         do_exit(0);
     }
   schedule();
-  var++;
+  
+  if(gpio_get_value(PIN) == 1) {
+    var = 1;
+  } else {
+    var = 0;
+  }
 }
 return 0;
 }
@@ -117,7 +122,7 @@ static int device_open(struct inode *inode, struct file *file)
       return -EBUSY;
 
    Device_Open++;
-   sprintf(msg, "I already told you %d times Hello world!\n", counter++);
+   sprintf(msg, "Var is currently: %d\n", var);
    msg_Ptr = msg;
    try_module_get(THIS_MODULE);
 
