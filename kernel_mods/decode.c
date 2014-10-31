@@ -135,8 +135,8 @@ static int __init morse_init(void)
 
   char morseMap[512];
   initMorseMap(morseMap);
-  
-  int BUF_LEN = 16;
+
+  int buff_len = 16;
   int LONG_WAIT = 100;
   int unit = 4;
   int MAX_DIT = 15;
@@ -145,8 +145,8 @@ static int __init morse_init(void)
   int iter = 1;
   for(; iter<100000; iter++){
     if(readSignal() == 1){
-      char buf[BUF_LEN];
-      init(buf,BUF_LEN);
+      char buf[buff_len];
+      init(buf,buff_len);
       int cnt = 0;
       while(1){
 	int cnt1 = 0, cnt0 = 0;
@@ -168,7 +168,7 @@ static int __init morse_init(void)
 	  buf[cnt++] = (cnt1>MAX_DIT?0:1);
 	}
       }
-      int key = getDecodeKey(buf, BUF_LEN);
+      int key = getDecodeKey(buf, buff_len);
       char result = morseMap[key];
       printk(KERN_INFO "do you mean %c?\n", result);
       break;
