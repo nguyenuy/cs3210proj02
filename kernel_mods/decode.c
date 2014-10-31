@@ -148,7 +148,6 @@ static int __init morse_init(void)
       char buf[buff_len];
       init(buf,buff_len);
       int cnt = 0;
-      break;
       while(1){
 	int cnt1 = 0, cnt0 = 0;
 	while(readSignal() == 1){
