@@ -291,11 +291,6 @@ void flashLED(int gpio) {
 
 int thread_fn(void) {
 
-    unsigned long j0,j1;
-    int delay = 600*HZ;
-    j0 = jiffies;
-    j1 = j0 + delay;
-
     while (1){ 
         if(kthread_should_stop()) {
             do_exit(0);
