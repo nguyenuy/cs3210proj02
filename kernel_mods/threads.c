@@ -186,6 +186,10 @@ int thread_init (void) {
  char name[8]="thread1";
  printk(KERN_INFO "in init\n");
  msg_Ptr = msg;
+ int i=0;
+ for(; i<BUF_LEN; i++) {
+    *(msg_Ptr + i) = 0;
+ }
  if(!msg_Ptr) {
     return -ENOMEM;
  }
@@ -224,7 +228,6 @@ static int device_open(struct inode *inode, struct file *file)
       return -EBUSY;
 
    Device_Open++;
-   sprintf(msg, "Keycode is: %d, Current Letter = %c\n", key, currentLetter);
    try_module_get(THIS_MODULE);
 
    return SUCCESS;
@@ -289,6 +292,9 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
     */
    len = 0;
    msg_Ptr = msg;
+   for(; i<BUF_LEN; i++) {
+        *(msg_Ptr + i) = 0;
+   }
    return bytes_read;
 }
 
