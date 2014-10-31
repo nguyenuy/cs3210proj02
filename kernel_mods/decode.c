@@ -1,3 +1,4 @@
+#include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
@@ -139,9 +140,7 @@ static int __init morse_init(void)
   int iter = 1;
   for(; iter<100000; iter++){
     if(readSignal() == 1){
-
-
-
+      break;
     }    
   }
 
