@@ -60,7 +60,7 @@ int thread_init (void) {
     }
     
     
-   printk(KERN_INFO "I was assigned major number %d. To talk to\n", Major);
+   printk(KERN_INFO "I was assigned major number %d. To talk to\n", major);
    printk(KERN_INFO "the driver, create a dev file with\n");
    printk(KERN_INFO "'mknod /dev/%s c %d 0'.\n", DEVICE_NAME, major);
    printk(KERN_INFO "Try various minor numbers. Try to cat and echo to\n");
