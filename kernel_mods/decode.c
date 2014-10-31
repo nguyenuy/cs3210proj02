@@ -127,6 +127,12 @@ void initialize_char_to_bin_array() {
   }   
 }
 
+void init(int* A, int n){
+  int i=0;
+  for(; i<n; i++){
+    A[i] = -2;
+  }
+}
 
 static int __init morse_init(void)
 {
@@ -140,9 +146,41 @@ static int __init morse_init(void)
 
   initialize_char_to_bin_array();
   
+  int BUF_LEN = 16;
+  int LONG_WAIT = 100;
+  int unit = 4;
+  int MAX_DIT = 15;
+  
+  
   int iter = 1;
   for(; iter<100000; iter++){
     if(readSignal() == 1){
+      int buf[BUF_LEN];
+      init(buf,BUF_LEN);
+      int cnt = 0;
+      while(1){
+	int cnt1 = 0, cnt0 = 0;
+	while(readSignal() == 1){
+	  cnt1++;
+	  udelay(unit);
+	}
+	while(readSignal() == 0){
+	  cnt0++;
+	  if(cnt0 > LONG_WAIT)
+	    break;
+	  else
+	    udelay(unit);
+	}
+	if(cnt0 > LONG_WAIT){
+	  buf[cnt++] = (cnt1>MAX_DIT?0:1);
+	  break;
+	}else{
+	  buf[cnt++] = (cnt1>MAX_DIT?0:1);
+	}
+      }
+      int key = getDecodeKey(buf, BUF_LEN);
+      char result = charToBin[key];
+      printk(KERN_INFO "do you mean %c?\n", result);
       break;
     }    
   }
