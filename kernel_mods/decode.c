@@ -144,7 +144,6 @@ static int __init morse_init(void)
     }else
       printk(KERN_INFO "No signal\n");
     
-    sleep(1);
   }
 
   return 0;
