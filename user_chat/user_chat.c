@@ -54,18 +54,17 @@ int main(int argc, char* argv[])
 	
 	int i = 0;
 	
-    if(f == NULL) {
-		printf("No Mem Error");
-		return -1;
-	}
-	
 	while(1) {
 		
 		printf("Please enter a message to send: ");
 		scanf("%s", send);
 		printf("Sending: %s", send);
 		
-		f = fopen("/root/test.txt", "r+");
+		f = fopen("/dev/morseThread", "r+");
+		if(f == NULL) {
+			printf("OUT OF MEMORY!\n");
+			return -1;
+		}
 		fprintf(f, "%s", send);
 		fclose(f);
 		
