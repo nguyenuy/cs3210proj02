@@ -288,6 +288,7 @@ static ssize_t device_read(struct file *filp,   /* see include/linux/fs.h   */
     * Most read functions return the number of bytes put into the buffer
     */
    len = 0;
+   msg_Ptr = msg;
    return bytes_read;
 }
 
