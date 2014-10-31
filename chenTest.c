@@ -168,7 +168,11 @@ int readSignal(){
   int fileHandleGPIO_7 = openGPIO(GP_7, GPIO_DIRECTION_IN);
   int x = readGPIO(fileHandleGPIO_7);
   closeGPIO(GP_7, fileHandleGPIO_7);
-  return x;
+  //return x;
+  if(x == 0)
+    return 1;
+  else 
+    return 0;
 }
 
 void printArray(int* A, int n){
