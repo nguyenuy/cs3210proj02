@@ -21,14 +21,14 @@ int recvLength = 0;
 FILE *f;
 
 void timeoutChar() {
-	f = fopen("/root/test.txt", "r+");
+	f = fopen("/dev/morseThread", "r+");
 	clock_t start = clock(), diff;
 	int seconds;
     while(1) {
 		
 		diff = clock() - start;
-		seconds = diff * CLOCKS_PER_SEC;
-		if(seconds > 10) {
+		seconds = diff / 100000;
+		if(seconds < 10) {
 			while(fscanf(f, "%c", &ch) != EOF) {
 				*(recvP++) = ch;
 				recvLength++;
@@ -65,13 +65,13 @@ int main(int argc, char* argv[])
 			printf("OUT OF MEMORY!\n");
 			return -1;
 		}
-		fprintf(f, "%s", send);
+		fprintf(f, "%s\n", send);
 		fclose(f);
-		
+		printf("Waiting to receive from morse device.\n");
 		timeoutChar();
 		*(recvP) = '\0';
 		recvP = recv;
-		printf("Received: %s", recv);
+		printf("Received: %s\n", recv);
 		
 	}
 	
