@@ -137,9 +137,9 @@ static int __init morse_init(void)
   initMorseMap(morseMap);
 
   int buff_len = 16;
-  int LONG_WAIT = 20;
-  int unit = 4;
-  int MAX_DIT = 6;
+  int LONG_WAIT = 5;
+  int unit = 1;
+  int MAX_DIT = 2;
   
   
   int iter = 1;
@@ -152,14 +152,14 @@ static int __init morse_init(void)
 	int cnt1 = 0, cnt0 = 0;
 	while(readSignal() == 1){
 	  cnt1++;
-	  udelay(unit);
+	  mdelay(unit);
 	}
 	while(readSignal() == 0){
 	  cnt0++;
 	  if(cnt0 > LONG_WAIT)
 	    break;
 	  else
-	    udelay(unit);
+	    mdelay(unit);
 	}
 	if(cnt0 > LONG_WAIT){
 	  buf[cnt++] = (cnt1>MAX_DIT?0:1);
